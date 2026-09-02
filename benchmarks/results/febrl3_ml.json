@@ -1,0 +1,98 @@
+{
+  "dataset": "febrl3",
+  "model": "LogisticRegression",
+  "threshold": 0.7,
+  "test_metrics": {
+    "precision": 0.5217,
+    "recall": 0.7426,
+    "f1": 0.6129,
+    "tp": 972,
+    "fp": 891,
+    "fn": 337,
+    "pred_count": 1863,
+    "truth_count": 1309
+  },
+  "curve": [],
+  "sample": [
+    {
+      "a": "rec-642-dup-0",
+      "b": "rec-642-dup-1",
+      "confidence": 0.948051948051948,
+      "evidence": {
+        "name": {
+          "match": true,
+          "score": 0.9090909090909091,
+          "method": "fuzzy",
+          "val_a": "KATELYN COLEGAMTE",
+          "val_b": "KATELYN COLEGTAE"
+        },
+        "phone": {
+          "match": true,
+          "score": 1.0,
+          "method": "exact",
+          "val_a": "4406021",
+          "val_b": "4406021"
+        }
+      },
+      "decision": "match"
+    },
+    {
+      "a": "rec-1103-dup-3",
+      "b": "rec-1103-org",
+      "confidence": 1.0,
+      "evidence": {
+        "name": {
+          "match": true,
+          "score": 1.0,
+          "method": "fuzzy",
+          "val_a": "INDIANA GOONAN",
+          "val_b": "INDIANA GOONAN"
+        },
+        "phone": {
+          "match": true,
+          "score": 1.0,
+          "method": "exact",
+          "val_a": "9556041",
+          "val_b": "9556041"
+        }
+      },
+      "decision": "match"
+    },
+    {
+      "a": "rec-497-dup-0",
+      "b": "rec-497-org",
+      "confidence": 0.9642857142857144,
+      "evidence": {
+        "name": {
+          "match": true,
+          "score": 0.9375,
+          "method": "fuzzy",
+          "val_a": "ALEXANRDA CLARKE",
+          "val_b": "ALEXANDRA CLARKE"
+        },
+        "phone": {
+          "match": true,
+          "score": 1.0,
+          "method": "exact",
+          "val_a": "3045502",
+          "val_b": "3045502"
+        }
+      },
+      "decision": "match"
+    }
+  ],
+  "truth_counts": {
+    "train": 3922,
+    "valid": 1307,
+    "test": 1309
+  },
+  "features": [
+    "name_sim",
+    "pc_exact",
+    "ext_exact",
+    "suburb_sim",
+    "dob_exact",
+    "token_overlap",
+    "len_diff"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "febrl3": {
+    "precision": 1.0,
+    "recall": 0.7605,
+    "f1": 0.8639,
+    "tp": 4972,
+    "fp": 0,
+    "fn": 1566,
+    "pred_count": 4972,
+    "truth_count": 6538
+  },
+  "walmart_amazon": {
+    "precision": 0.8696,
+    "recall": 0.5181,
+    "f1": 0.6494,
+    "tp": 100,
+    "fp": 15,
+    "fn": 93,
+    "pred_count": 115,
+    "truth_count": 193
+  },
+  "amazon_google": {
+    "precision": 0.6237,
+    "recall": 0.2479,
+    "f1": 0.3547,
+    "tp": 58,
+    "fp": 35,
+    "fn": 176,
+    "pred_count": 93,
+    "truth_count": 234
+  },
+  "note": "Production models used by every live feature (matching, reconciliation, conflicts) \u2014 trained on full benchmark datasets, validated on test, frozen thresholds"
+}

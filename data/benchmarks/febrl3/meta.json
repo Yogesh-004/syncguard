@@ -1,0 +1,22 @@
+{
+  "dataset": "febrl3",
+  "source": "recordlinkage.datasets.load_febrl3",
+  "rows": 5000,
+  "cols": 10,
+  "columns": [
+    "given_name",
+    "surname",
+    "street_number",
+    "address_1",
+    "address_2",
+    "suburb",
+    "postcode",
+    "state",
+    "date_of_birth",
+    "soc_sec_id"
+  ],
+  "links": 6538,
+  "generated_at": "2026-09-02T03:26:54.674837",
+  "csv": "data\\benchmarks\\febrl3\\febrl3.csv",
+  "links_csv": "data\\benchmarks\\febrl3\\links.csv"
+}

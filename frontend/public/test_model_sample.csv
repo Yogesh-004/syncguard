@@ -1,0 +1,21 @@
+rec_id,given_name,surname,street_number,address_1,suburb,postcode,state,date_of_birth,soc_sec_id,email,phone,name
+rec-001,mitchell,green,7,wallaby place,cleveland,2119,sa,19560409,1804974,mitchell.green@example.com,1804974,Mitchell Green
+rec-001-dup,mitchell,green,7,wallaby place,cleveland,2119,sa,19560409,1804974,mitchell.green@example.com,1804974,Mitchell Green
+rec-002,harley,mccarthy,177,pridham street,marsden,3165,nsw,19080419,6089216,harley.mccarthy@test.com,6089216,Harley McCarthy
+rec-002-dup,harley,mccarty,177,pridham st,marsden,3165,nsw,19080419,6089216,harley.mccarthy@test.com,6089216,Harley McCarty
+rec-003,madeline,mason,54,hoseason street,granville,4881,nsw,19081128,2185997,madeline.mason@demo.net,2185997,Madeline Mason
+rec-003-dup,madeline,mason,54,hoseason st,granville,4881,nsw,19081128,2185997,madeline.mason@demo.net,2185997,Madeline Mason
+rec-004,isabelle,,23,gundulu place,utakarra,2193,wa,19921119,4314184,isabelle@example.com,4314184,Isabelle
+rec-004-dup,isabelle,,23,gundulu place,utakarra,2193,wa,19921119,4314184,isabelle@example.com,4314184,Isabelle
+rec-005,john,smith,10,main street,sydney,2000,nsw,19800101,1111111,john.smith@example.com,5550001,John Smith
+rec-006,john,smyth,10,main street,sydney,2000,nsw,19800101,2222222,john.smith@example.com,5550002,John Smyth
+rec-007,sarah,connor,50,park avenue,melbourne,3000,vic,19900505,3333333,sarah.connor@test.org,5550003,Sarah Connor
+rec-007-dup,sarah,connor,50,park av,melbourne,3000,vic,19900505,3333333,sarah.connor@test.org,5550003,Sarah Connor
+rec-008,ravi,kumar,15,mg road,bangalore,560001,ka,19900115,9876543210,ravi@gmail.com,9876543210,Ravi Kumar
+rec-008-dup,ravi,kumar,15,mg road,bangalore,560001,ka,19900115,9876543210,ravi@gmail.com,9876543210,RAVI KUMAR
+rec-008-dup2,ravi,k,15,mg road,bangalore,560001,ka,19900115,9876543210,ravi@gmail.com,,Ravi K.
+rec-009,ananya,sharma,20,connaught place,delhi,110001,dl,19920320,9876543211,ananya@demo.com,9876543211,Ananya Sharma
+rec-009-dup,ananya,sharma,20,connaught place,delhi,110001,dl,19920320,9876543211,ananya@demo.com,9876543211,ANANYA SHARMA
+rec-010,vikram,patel,30,bandra,mumbai,400050,mh,19851212,9876543212,vikram@test.org,9876543212,Vikram Patel
+rec-011,priya,singh,40,mg road,pune,411001,mh,19930715,9876543213,priya@gmail.com,9876543213,Priya Singh
+rec-012,arjun,mehta,60,park street,kolkata,700001,wb,19880720,9876543214,arjun@example.com,9876543214,Arjun Mehta

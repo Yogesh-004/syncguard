@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SyncGuard - Teaching Mode</title>
+<style>
+:root { --bg: #0f172a; --surface: #1e293b; --border: #334155; --text: #e2e8f0; --text-dim: #94a3b8; --accent: #3b82f6; --accent2: #22c55e; --warn: #f59e0b; --danger: #ef4444; --code-bg: #0c1118; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 16px; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 0; position: sticky; top: 0; z-index: 100; }
+nav .container { display: flex; align-items: center; justify-content: space-between; }
+nav h1 { color: var(--accent); font-size: 1.4rem; }
+nav ul { list-style: none; display: flex; gap: 16px; }
+nav a { color: var(--text-dim); font-size: 0.9rem; }
+nav a:hover { color: var(--accent); }
+section { padding: 60px 0; border-bottom: 1px solid var(--border); }
+h2 { font-size: 2rem; margin-bottom: 16px; color: #fff; }
+h3 { font-size: 1.3rem; margin: 24px 0 12px; color: var(--accent); }
+h4 { font-size: 1.1rem; margin: 16px 0 8px; color: var(--accent2); }
+p { margin-bottom: 12px; color: var(--text-dim); }
+code { background: var(--code-bg); color: var(--warn); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; margin: 12px 0; }
+pre code { background: none; padding: 0; color: var(--text); }
+.info { background: var(--surface); border-left: 4px solid var(--accent); padding: 16px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+.warn { background: var(--surface); border-left: 4px solid var(--warn); padding: 16px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+.tip { background: var(--surface); border-left: 4px solid var(--accent2); padding: 16px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+.step { background: var(--surface); border-radius: 8px; padding: 16px; margin: 8px 0; border: 1px solid var(--border); }
+.step .num { display: inline-block; background: var(--accent); color: #fff; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: 700; margin-right: 8px; font-size: 0.85rem; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+th { color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+footer { text-align: center; padding: 40px 0; color: var(--text-dim); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<nav>
+<div class="container">
+<h1>SyncGuard</h1>
+<ul><li><a href="#ch0">Intro</a></li><li><a href="#ch1">Architecture</a></li><li><a href="#ch2">Setup</a></li><li><a href="#ch3">Models</a></li><li><a href="#ch4">Normalization</a></li><li><a href="#ch5">Matching</a></li><li><a href="#ch6">Conflicts</a></li><li><a href="#ch7">Connectors</a></li><li><a href="#ch8">API</a></li><li><a href="#ch9">Workers</a></li><li><a href="#ch10">Frontend</a></li><li><a href="#ch11">Deploy</a></li><li><a href="#ch12">Tests</a></li></ul>
+</div>
+</nav>
+<div class="container">
+
+<section id="ch0">
+<h2>Chapter 0: Introduction</h2>
+<p>SyncGuard is a production-oriented platform for cross-system data reconciliation and integration reliability. It detects, matches, and resolves inconsistencies across multiple data sources.</p>
+<h3>What You Will Learn</h3>
+<div class="step"><span class="num">1</span>Design a full-stack data reconciliation system from scratch</div>
+<div class="step"><span class="num">2</span>Use FastAPI, SQLAlchemy, Pydantic, Celery, and React together</div>
+<div class="step"><span class="num">3</span>Implement deterministic data normalization and fuzzy matching</div>
+<div class="step"><span class="num">4</span>Detect schema drift and resolve data conflicts</div>
+<div class="step"><span class="num">5</span>Deploy with Docker, CI/CD, and monitoring</div>
+<h3>Tech Stack</h3>
+<table>
+<tr><th>Layer</th><th>Technology</th><th>Role</th></tr>
+<tr><td>Frontend</td><td>React + Vite + Recharts</td><td>Dashboard and visualization</td></tr>
+<tr><td>Backend</td><td>FastAPI + Python</td><td>REST API</td></tr>
+<tr><td>Database</td><td>PostgreSQL + SQLAlchemy</td><td>Persistent storage</td></tr>
+<tr><td>Background</td><td>Celery + Redis</td><td>Async job processing</td></tr>
+<tr><td>Matching</td><td>RapidFuzz</td><td>Fuzzy entity resolution</td></tr>
+<tr><td>CI/CD</td><td>GitHub Actions</td><td>Automated pipeline</td></tr>
+</table>
+<div class="info"><strong>Key Concept:</strong> Data reconciliation compares records from multiple sources, finds matches and conflicts, and produces a clean, unified view of the data.</div>
+</section>
+
+<section id="ch1">
+<h2>Chapter 1: Architecture</h2>
+<p>SyncGuard follows a clean layered architecture with separation of concerns:</p>
+<h3>Application Layers</h3>
+<table>
+<tr><th>Layer</th><th>Directory</th><th>Responsibility</th></tr>
+<tr><td>API</td><td>backend/app/api/</td><td>HTTP endpoints, request/response validation</td></tr>
+<tr><td>Services</td><td>backend/app/services/</td><td>Business logic (matching, normalization, reconciliation)</td></tr>
+<tr><td>Connectors</td><td>backend/app/connectors/</td><td>Data ingestion from CSV, JSON, REST sources</td></tr>
+<tr><td>Models</td><td>backend/app/db/models.py</td><td>SQLAlchemy ORM definitions</td></tr>
+<tr><td>Schemas</td><td>backend/app/schemas/</td><td>Pydantic request/response models</td></tr>
+<tr><td>Workers</td><td>backend/app/workers/</td><td>Celery background tasks</td></tr>
+<tr><td>Frontend</td><td>frontend/src/</td><td>React dashboard components</td></tr>
+</table>
+<h3>Data Flow</h3>
+<div class="step"><span class="num">1</span>Ingest data via connectors (CSV, JSON, REST)</div>
+<div class="step"><span class="num">2</span>Normalize records deterministically</div>
+<div class="step"><span class="num">3</span>Run matching engine to find entity pairs</div>
+<div class="step"><span class="num">4</span>Detect conflicts and assess risk</div>
+<div class="step"><span class="num">5</span>Resolve conflicts (auto or manual)</div>
+<div class="step"><span class="num">6</span>Log all actions in audit trail</div>
+<div class="tip"><strong>Design Principle:</strong> Each layer has a single responsibility. Services never touch HTTP, models never touch business logic, and connectors never know about matching.</div>
+</section>
+
+<section id="ch2">
+<h2>Chapter 2: Project Setup</h2>
+<h3>Directory Structure</h3>
+<pre><code>Syncguard/
+  backend/
+    app/
+      main.py           FastAPI app entry point
+      core/             Config, logging
+      schemas/          Pydantic models
+      db/               Database models and engine
+      services/         Business logic
+      connectors/       Data ingestors
+      api/              Route definitions
+      workers/          Celery tasks
+      utils/            Helper functions
+    tests/                pytest tests
+  frontend/                 React + Vite app
+  data/demo/                Sample datasets
+  benchmarks/               Performance benchmarks
+  .github/workflows/        CI/CD pipelines
+  docker-compose.yml
+  Dockerfile
+  pyproject.toml</code></pre>
+<h3>Initialize the Project</h3>
+<div class="step"><span class="num">1</span>Create virtual environment: <code>python -m venv .venv</code></div>
+<div class="step"><span class="num">2</span>Install dependencies: <code>pip install -r backend/requirements.txt</code></div>
+<div class="step"><span class="num">3</span>Copy config: <code>cp .env.example .env</code></div>
+<div class="step"><span class="num">4</span>Start services: <code>docker-compose up</code></div>
+<h3>Configuration</h3>
+<p>The app uses pydantic-settings to load configuration from environment variables and .env files:</p>
+<pre><code>DATABASE_URL=postgresql://postgres:postgres@localhost:5432/syncguard
+REDIS_URL=redis://localhost:6379/0
+DEMO_MODE=true
+CELERY_BROKER_URL=redis://localhost:6379/0</code></pre>
+<div class="warn"><strong>Important:</strong> Never commit your .env file. Use .env.example as a template. The .gitignore file ensures this.</div>
+</section>
+
+<section id="ch3">
+<h2>Chapter 3: Database Models</h2>
+<p>SQLAlchemy models define the database schema. Each model maps to a table with columns and relationships.</p>
+<h3>Base Models</h3>
+<pre><code>from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+
+engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()</code></pre>
+<h3>Core Model: Record</h3>
+<pre><code>class RecordModel(Base):
+    __tablename__ = "records"
+    id = Column(Integer, primary_key=True, index=True)
+    source_id = Column(String(100), nullable=False, index=True)
+    source_record_id = Column(String(200), nullable=False)
+    data = Column(JSON, nullable=False)
+    normalized_data = Column(JSON, nullable=True)
+    is_processed = Column(Boolean, default=False)</code></pre>
+<h3>Relationship Model: Match</h3>
+<pre><code>class MatchModel(Base):
+    __tablename__ = "matches"
+    id = Column(Integer, primary_key=True, index=True)
+    record_a_id = Column(Integer, ForeignKey("records.id"), nullable=False)
+    record_b_id = Column(Integer, ForeignKey("records.id"), nullable=False)
+    confidence = Column(Float, nullable=False)
+    match_method = Column(String(50))
+    evidence = Column(JSON)
+    is_resolved = Column(Boolean, default=False)</code></pre>
+<div class="info"><strong>Key Concept:</strong> foreign_key creates a relationship between tables. lazy="dynamic" means related objects are loaded on demand, not eagerly.</div>
+<h3>Key Models Summary</h3>
+<table>
+<tr><th>Table</th><th>Purpose</th></tr>
+<tr><td>sources</td><td>Data source registrations</td></tr>
+<tr><td>records</td><td>Raw and normalized records</td></tr>
+<tr><td>matches</td><td>Detected record pairs with confidence</td></tr>
+<tr><td>conflicts</td><td>Data conflicts needing resolution</td></tr>
+<tr><td>reconciliation_jobs</td><td>Batch reconciliation tasks</td></tr>
+<tr><td>audit_logs</td><td>Complete action history</td></tr>
+</table>
+</section>
+
+<section id="ch4">
+<h2>Chapter 4: Data Normalization</h2>
+<p>Normalization converts raw data into a consistent format before matching. This is critical because the same data can appear in many formats.</p>
+<h3>Why Normalize?</h3>
+<div class="info">Consider these names that refer to the same person: "john doe", "John Doe", "JOHN DOE", "  John   Doe  "</div>
+<p>After normalization, all become JOHN DOE and can be matched correctly.</p>
+<h3>Normalization Functions</h3>
+<h4>Name Normalization</h4>
+<pre><code>def normalize_name(value: str) -> str:
+    if not value: return ""
+    normalized = value.strip().upper()
+    normalized = re.sub(r"\s+", " ", normalized)
+    return normalized
+# "  john   doe  " becomes "JOHN DOE"</code></pre>
+<h4>Phone Normalization</h4>
+<pre><code>def normalize_phone(value: str) -> str:
+    digits = re.sub(r"\D", "", value)
+    if len(digits) == 10:
+        return f"+1{digits}"
+    return f"+{digits}"
+# "5551234567" becomes "+15551234567"</code></pre>
+<h4>Email Normalization</h4>
+<pre><code>def normalize_email(value: str) -> str:
+    return value.strip().lower()</code></pre>
+<h4>Full Normalization Pipeline</h4>
+<pre><code>def normalize_record(data: Dict[str, Any]) -> Dict[str, Any]:
+    normalized = {}
+    if "name" in data: normalized["name"] = normalize_name(data["name"])
+    if "phone" in data: normalized["phone"] = normalize_phone(data["phone"])
+    if "email" in data: normalized["email"] = normalize_email(data["email"])
+    # handles addresses, identifiers, dates, numerics
+    return normalized</code></pre>
+<div class="tip"><strong>Rule:</strong> Always normalize before comparing. Matching on raw data produces false negatives due to formatting differences.</div>
+</section>
+
+<section id="ch5">
+<h2>Chapter 5: Matching and Entity Resolution</h2>
+<p>The matching engine compares records from different sources to identify which ones refer to the same real-world entity.</p>
+<h3>Match Types</h3>
+<table>
+<tr><th>Type</th><th>Description</th><th>Example</th></tr>
+<tr><td>Exact</td><td>Strings are identical</td><td>"JOHN DOE" == "JOHN DOE"</td></tr>
+<tr><td>Fuzzy</td><td>Strings are similar (RapidFuzz)</td><td>"JOHN DOE" ~ "JON DOE" (92%)</td></tr>
+<tr><td>Prefix</td><td>One string starts with another</td><td>"JOHN" starts with "JOH"</td></tr>
+<tr><td>Contains</td><td>One string is in another</td><td>"doe" in "JOHN DOE"</td></tr>
+</table>
+<h3>Weighted Scoring</h3>
+<p>Each field has a weight based on its reliability:</p>
+<pre><code>rules = [
+    MatchingRule(field_name="name", match_type="fuzzy", weight=0.4, threshold=0.85),
+    MatchingRule(field_name="email", match_type="exact", weight=0.3),
+    MatchingRule(field_name="phone", match_type="exact", weight=0.3),
+]</code></pre>
+<p>Confidence = sum(field_score * field_weight) / sum(weights)</p>
+<h3>Entity Grouping</h3>
+<p>When record A matches B, and B matches C, they should all be in the same entity group. The engine uses a Union-Find algorithm:</p>
+<pre><code>def find(x, parent):
+    while parent[x] != x:
+        parent[x] = parent[parent[x]]  # path compression
+        x = parent[x]
+    return x
+
+def union(x, y, parent):
+    rx, ry = find(x, parent), find(y, parent)
+    if rx != ry:
+        parent[rx] = ry</code></pre>
+<div class="warn"><strong>Common Pitfall:</strong> Transitive matching requires Union-Find. A simple pairwise comparison misses groups of 3+ records that all match each other indirectly.</div>
+</section>
+
+<section id="ch6">
+<h2>Chapter 6: Conflict Detection and Resolution</h2>
+<p>When matched records disagree on a field value, a conflict is created.</p>
+<h3>Conflict Types</h3>
+<table>
+<tr><th>Type</th><th>Meaning</th><th>Example</th></tr>
+<tr><td>mismatch</td><td>Different values</td><td>Age: 30 vs 25</td></tr>
+<tr><td>missing</td><td>One side is null</td><td>Email: john@x.com vs null</td></tr>
+<tr><td>type_error</td><td>Wrong data type</td><td>Age: "thirty" vs 30</td></tr>
+</table>
+<h3>Risk Assessment</h3>
+<pre><code>def assess_risk(conflicts):
+    critical_count = sum(1 for c in conflicts if c.conflict_type == "type_error")
+    if critical_count >= 3: return RiskLevel.CRITICAL
+    if critical_count >= 1: return RiskLevel.HIGH
+    return RiskLevel.MEDIUM</code></pre>
+<h3>Resolution Actions</h3>
+<table>
+<tr><th>Action</th><th>When to Use</th></tr>
+<tr><td>approve</td><td>Accept one record as the source of truth</td></tr>
+<tr><td>reject</td><td>Both records are invalid</td></tr>
+<tr><td>modify</td><td>Merge or correct specific fields</td></tr>
+<tr><td>defer</td><td>Cannot resolve now, revisit later</td></tr>
+</table>
+<div class="tip"><strong>Auto-resolution:</strong> If there is only one conflict and no type errors, the system can auto-resolve by preferring the most recent or most complete record.</div>
+</section>
+
+<section id="ch7">
+<h2>Chapter 7: Data Connectors</h2>
+<p>Connectors abstract away the differences between data sources. The same matching engine works regardless of where data comes from.</p>
+<h3>CSV Connector</h3>
+<pre><code>from backend.app.connectors.csv_connector import CSVConnector
+conn = CSVConnector()
+records = conn.read_all("data/users.csv")
+conn.write(records, "output/normalized.csv")</code></pre>
+<h3>JSON Connector</h3>
+<pre><code>from backend.app.connectors.json_connector import JSONConnector
+conn = JSONConnector()
+records = conn.read_all("data/users.json")
+# Handles both array-of-objects and {key: [objects]} formats</code></pre>
+<h3>REST Connector</h3>
+<pre><code>from backend.app.connectors.rest_connector import RESTConnector
+conn = RESTConnector()
+conn.set_header("Authorization", "Bearer token")
+records = conn.read_all("https://api.example.com/users")
+# Also supports POST, PUT, DELETE</code></pre>
+<div class="info"><strong>Design Pattern:</strong> All connectors share a common interface: read(), read_all(), write(), validate(). This makes it trivial to add new source types.</div>
+</section>
+
+<section id="ch8">
+<h2>Chapter 8: REST API</h2>
+<p>FastAPI provides automatic OpenAPI documentation and type validation via Pydantic models.</p>
+<h3>Defining Routes</h3>
+<pre><code>from fastapi import APIRouter, Depends
+from backend.app.db.database import get_db
+
+router = APIRouter()
+
+@router.get("/records", response_model=PaginatedResponse)
+def list_records(page=1, page_size=50, db: Session = Depends(get_db)):
+    query = db.query(RecordModel)
+    total = query.count()
+    items = query.offset((page-1)*page_size).limit(page_size).all()
+    return PaginatedResponse(total=total, page=page, page_size=page_size, items=items)</code></pre>
+<h3>Key Endpoints</h3>
+<table>
+<tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
+<tr><td>GET</td><td>/health</td><td>Service health check</td></tr>
+<tr><td>GET</td><td>/records</td><td>List all records with pagination</td></tr>
+<tr><td>POST</td><td>/records/upload</td><td>Upload CSV/JSON data</td></tr>
+<tr><td>GET</td><td>/match</td><td>Find entity matches</td></tr>
+<tr><td>GET</td><td>/conflicts</td><td>List unresolved conflicts</td></tr>
+<tr><td>POST</td><td>/conflicts/{id}/resolve</td><td>Resolve a conflict</td></tr>
+<tr><td>GET</td><td>/schema/drift</td><td>Detect schema changes</td></tr>
+<tr><td>POST</td><td>/reconcile</td><td>Run full reconciliation</td></tr>
+</table>
+<div class="tip"><strong>Developer Experience:</strong> FastAPI auto-generates interactive API docs at /docs. Test all endpoints directly in your browser.</div>
+</section>
+
+<section id="ch9">
+<h2>Chapter 9: Background Workers</h2>
+<p>Celery handles long-running tasks asynchronously, using Redis as the message broker.</p>
+<h3>Celery Configuration</h3>
+<pre><code>from celery import Celery
+from backend.app.core.config import settings
+
+celery_app = Celery(
+    "syncguard",
+    broker=settings.REDIS_URL,
+    backend=settings.REDIS_URL,
+    include=["backend.app.workers.tasks"],
+)
+
+celery_app.conf.update(
+    task_acks_late=True,
+    worker_prefetch_multiplier=1,
+)</code></pre>
+<h3>Task Definition</h3>
+<pre><code>@celery_app.task(bind=True, max_retries=3)
+def reconcile_task(self, source_id: str, records: list):
+    try:
+        self.update_state(state="RUNNING", meta={"progress": 10})
+        engine = ReconciliationEngine()
+        result = engine.run_reconciliation(records)
+        self.update_state(state="COMPLETED", meta={"progress": 100})
+        return result
+    except Exception as exc:
+        self.retry(exc=exc, countdown=60)</code></pre>
+<h3>Worker Commands</h3>
+<pre><code>celery -A backend.app.workers.celery_app worker --loglevel=info --concurrency=2</code></pre>
+<div class="warn"><strong>Production Note:</strong> Use task_acks_late=True to ensure tasks are not lost if a worker crashes. Use max_retries for fault tolerance.</div>
+</section>
+
+<section id="ch10">
+<h2>Chapter 10: Frontend Dashboard</h2>
+<p>The React dashboard provides a real-time view of reconciliation status, conflicts, and matching results.</p>
+<h3>Component Structure</h3>
+<pre><code>frontend/src/
+  App.tsx              Router and navigation
+  pages/
+    Dashboard.tsx    Stats and overview
+    Records.tsx      Record management
+    Matching.tsx     Matching results
+    Conflicts.tsx    Conflict resolution
+    Sources.tsx      Source configuration
+    Jobs.tsx         Job monitoring
+  components/          Reusable UI
+  charts/              Recharts visualizations
+  hooks/               Custom React hooks
+  services/            API client</code></pre>
+<h3>Dark Theme CSS</h3>
+<pre><code>:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --border: #334155;
+  --text: #e2e8f0;
+  --accent: #3b82f6;
+}</code></pre>
+<h3>Data Visualization</h3>
+<p>Recharts provides declarative chart components:</p>
+<pre><code>Andlt;ResponsiveContainer width="100%" height={300}Andgt;
+  Andlt;BarChart data={data}Andgt;
+    Andlt;Bar dataKey="value" fill="#3b82f6" /Andgt;
+    Andlt;XAxis dataKey="label" /Andgt;
+    Andlt;YAxis /Andgt;
+  Andlt;/BarChartAndgt;
+Andlt;/ResponsiveContainerAndgt;</code></pre>
+</section>
+
+<section id="ch11">
+<h2>Chapter 11: Deployment</h2>
+<h3>Docker Compose</h3>
+<pre><code>services:
+  postgres:    PostgreSQL 16
+  redis:       Redis 7
+  syncguard:   FastAPI application
+  celery-worker: Background task processor</code></pre>
+<h3>Deployment Targets</h3>
+<table>
+<tr><th>Component</th><th>Platform</th><th>Notes</th></tr>
+<tr><td>Backend</td><td>Render</td><td>Docker container with PostgreSQL</td></tr>
+<tr><td>Frontend</td><td>Cloudflare Pages</td><td>Static React build</td></tr>
+<tr><td>Database</td><td>Supabase</td><td>Managed PostgreSQL</td></tr>
+<tr><td>CI/CD</td><td>GitHub Actions</td><td>Automated test, build, deploy</td></tr>
+</table>
+<h3>Dockerfile</h3>
+<pre><code>FROM python:3.12-slim
+WORKDIR /app
+RUN apt-get update && apt-get install -y gcc libpq-dev
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY backend/ /app/backend/
+EXPOSE 8000
+CMD ["python", "-m", "uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]</code></pre>
+<div class="tip"><strong>Best Practice:</strong> Use multi-stage builds for smaller images in production. Separate the database, application, and worker into different containers.</div>
+</section>
+
+<section id="ch12">
+<h2>Chapter 12: Testing</h2>
+<h3>Test Strategy</h3>
+<table>
+<tr><th>Type</th><th>Location</th><th>Coverage</th></tr>
+<tr><td>Unit tests</td><td>backend/tests/unit/</td><td>Individual functions and methods</td></tr>
+<tr><td>Integration tests</td><td>backend/tests/integration/</td><td>API endpoints and DB interactions</td></tr>
+<tr><td>Benchmarks</td><td>benchmarks/</td><td>Performance under load</td></tr>
+</table>
+<h3>Running Tests</h3>
+<pre><code>pip install pytest pytest-asyncio
+pytest backend/tests/ -v</code></pre>
+<h3>Example Unit Test</h3>
+<pre><code>class TestNormalizeName:
+    def test_basic(self):
+        assert normalize_name("john doe") == "JOHN DOE"
+    def test_whitespace(self):
+        assert normalize_name("  john   doe  ") == "JOHN DOE"</code></pre>
+<h3>Example Benchmark</h3>
+<pre><code>def benchmark_matching(num_records=100):
+    records = [generate_record(i) for i in range(num_records)]
+    engine = MatchingEngine()
+    start = time.time()
+    results = engine.find_matches(records)
+    print(f"{num_records} records: {len(results)} matches in {elapsed:.3f}s")</code></pre>
+<div class="warn"><strong>Golden Rule:</strong> Every new feature must have at least one test. Benchmarks ensure performance does not degrade as the codebase grows.</div>
+</section>
+
+<div style="border-top: 1px solid var(--border); margin:40px 0;"></div>
+
+<footer>
+<p><strong>SyncGuard Teaching Mode</strong> - Built with FastAPI, React, and love</p>
+<p>All code is in the Syncguard repository. Open /docs in the running app to see the live API.</p>
+</footer>
+
+</div>
+</body>
+</html>

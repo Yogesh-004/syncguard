@@ -1,0 +1,162 @@
+# Benchmark Summary
+
+Last run febrl3 syncguard threshold 0.7
+
+```json
+{
+  "dataset": "febrl3",
+  "model": "syncguard",
+  "threshold": 0.7,
+  "test_metrics": {
+    "precision": 0.5242,
+    "recall": 0.6631,
+    "f1": 0.5855,
+    "tp": 868,
+    "fp": 788,
+    "fn": 441,
+    "pred_count": 1656,
+    "truth_count": 1309
+  },
+  "curve": [
+    {
+      "threshold": 0.5,
+      "precision": 0.518,
+      "recall": 0.7376,
+      "f1": 0.6086,
+      "tp": 964,
+      "fp": 897,
+      "fn": 343,
+      "pred_count": 1861,
+      "truth_count": 1307
+    },
+    {
+      "threshold": 0.6,
+      "precision": 0.5237,
+      "recall": 0.72,
+      "f1": 0.6063,
+      "tp": 941,
+      "fp": 856,
+      "fn": 366,
+      "pred_count": 1797,
+      "truth_count": 1307
+    },
+    {
+      "threshold": 0.7,
+      "precision": 0.5264,
+      "recall": 0.6702,
+      "f1": 0.5897,
+      "tp": 876,
+      "fp": 788,
+      "fn": 431,
+      "pred_count": 1664,
+      "truth_count": 1307
+    },
+    {
+      "threshold": 0.8,
+      "precision": 0.5286,
+      "recall": 0.5371,
+      "f1": 0.5328,
+      "tp": 702,
+      "fp": 626,
+      "fn": 605,
+      "pred_count": 1328,
+      "truth_count": 1307
+    },
+    {
+      "threshold": 0.9,
+      "precision": 0.5201,
+      "recall": 0.4254,
+      "f1": 0.468,
+      "tp": 556,
+      "fp": 513,
+      "fn": 751,
+      "pred_count": 1069,
+      "truth_count": 1307
+    },
+    {
+      "threshold": 0.95,
+      "precision": 0.5179,
+      "recall": 0.3879,
+      "f1": 0.4436,
+      "tp": 507,
+      "fp": 472,
+      "fn": 800,
+      "pred_count": 979,
+      "truth_count": 1307
+    }
+  ],
+  "sample": [
+    {
+      "a": "rec-29-dup-4",
+      "b": "rec-29-org",
+      "confidence": 0.9560439560439562,
+      "evidence": {
+        "name": {
+          "match": true,
+          "score": 0.923076923076923,
+          "method": "fuzzy",
+          "val_a": "AIDSN HORSLEY",
+          "val_b": "AIDAN HORSLEY"
+        },
+        "phone": {
+          "match": true,
+          "score": 1.0,
+          "method": "exact",
+          "val_a": "9900834",
+          "val_b": "9900834"
+        }
+      },
+      "decision": "match"
+    },
+    {
+      "a": "rec-855-dup-1",
+      "b": "rec-855-dup-2",
+      "confidence": 0.978835978835979,
+      "evidence": {
+        "name": {
+          "match": true,
+          "score": 0.962962962962963,
+          "method": "fuzzy",
+          "val_a": "JASMINE ROYLEU",
+          "val_b": "JASMINE ROYLE"
+        },
+        "phone": {
+          "match": true,
+          "score": 1.0,
+          "method": "exact",
+          "val_a": "8590831",
+          "val_b": "8590831"
+        }
+      },
+      "decision": "match"
+    },
+    {
+      "a": "rec-1503-dup-0",
+      "b": "rec-1503-org",
+      "confidence": 0.904761904761905,
+      "evidence": {
+        "name": {
+          "match": true,
+          "score": 0.8333333333333335,
+          "method": "fuzzy",
+          "val_a": "TIANA STBUBD",
+          "val_b": "TIANA STUBBS"
+        },
+        "phone": {
+          "match": true,
+          "score": 1.0,
+          "method": "exact",
+          "val_a": "1274999",
+          "val_b": "1274999"
+        }
+      },
+      "decision": "match"
+    }
+  ],
+  "truth_counts": {
+    "train": 3922,
+    "valid": 1307,
+    "test": 1309
+  }
+}
+```

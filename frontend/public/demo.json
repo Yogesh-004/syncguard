@@ -1,0 +1,38 @@
+{
+  "systems_monitored": 3,
+  "records_processed": 3247,
+  "matches": 892,
+  "conflicts": 47,
+  "auto_resolvable": 31,
+  "schema_changes": 2,
+  "failed_sync_jobs": 3,
+  "reconciliation_health": 94.2,
+  "match_rate": 86.4,
+  "conflict_rate": 5.3,
+  "resolution_rate": 68.1,
+  "confidence_distribution": [
+    {"name": "High (>95%)", "value": 612},
+    {"name": "Medium (80-95%)", "value": 233},
+    {"name": "Low (<80%)", "value": 47}
+  ],
+  "recent_conflicts": [
+    {
+      "id": 1,
+      "customer": "C10482 — Ravi Kumar",
+      "confidence": 96.7,
+      "evidence": ["Email match", "Phone match", "Name similarity 94%"],
+      "warning": "Accounting phone missing",
+      "recommendation": "AUTO-RESOLVE",
+      "risk": "LOW",
+      "crm": {"name": "Ravi Kumar", "email": "ravi@gmail.com", "phone": "9876543210"},
+      "erp": {"name": "RAVI KUMAR", "email": "ravi@gmail.com", "phone": "9876543210"},
+      "accounting": {"name": "Ravi K.", "email": "ravi@gmail.com", "phone": null}
+    }
+  ],
+  "schema_drift": {
+    "removed": ["amount"],
+    "added": ["transaction_amount"],
+    "renamed": [{"from": "amount", "to": "transaction_amount", "confidence": 94}],
+    "affected_pipelines": 3
+  }
+}

@@ -1,0 +1,1402 @@
+[
+  {
+    "id": 0,
+    "source_id": "source-2",
+    "source_record_id": "rec-0000",
+    "data": {
+      "name": "John Brown",
+      "email": "john.brown@example.com",
+      "phone": "555437812",
+      "age": 65,
+      "amount": 5030.1,
+      "date": "2024-05-22"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 1,
+    "source_id": "source-3",
+    "source_record_id": "rec-0001",
+    "data": {
+      "name": "Jane Johnson",
+      "email": "jane.johnson@example.com",
+      "phone": "555803454",
+      "age": 38,
+      "amount": 9319.73,
+      "date": "2024-11-25"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 2,
+    "source_id": "source-4",
+    "source_record_id": "rec-0002",
+    "data": {
+      "name": "Frank Smith",
+      "email": "frank.smith@sample.io",
+      "phone": "555954177",
+      "age": 39,
+      "amount": 3880.69,
+      "date": "2024-01-15"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 3,
+    "source_id": "source-4",
+    "source_record_id": "rec-0003",
+    "data": {
+      "name": "Charlie Martinez",
+      "email": "charlie.martinez@example.com",
+      "phone": "555408542",
+      "age": 25,
+      "amount": 8240.43,
+      "date": "2024-10-22"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 4,
+    "source_id": "source-4",
+    "source_record_id": "rec-0004",
+    "data": {
+      "name": "Jane Brown",
+      "email": "jane.brown@demo.net",
+      "phone": "555725030",
+      "age": 80,
+      "amount": 4163.83,
+      "date": "2024-11-06"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 5,
+    "source_id": "source-1",
+    "source_record_id": "rec-0005",
+    "data": {
+      "name": "Charlie Smith",
+      "email": "charlie.smith@example.com",
+      "phone": "555289692",
+      "age": 77,
+      "amount": 3418.56,
+      "date": "2024-01-16"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 6,
+    "source_id": "source-4",
+    "source_record_id": "rec-0006",
+    "data": {
+      "name": "Henry Jones",
+      "email": "henry.jones@demo.net",
+      "phone": "555752733",
+      "age": 51,
+      "amount": 9156.89,
+      "date": "2024-06-10"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 7,
+    "source_id": "source-5",
+    "source_record_id": "rec-0007",
+    "data": {
+      "name": "Henry Rodriguez",
+      "email": "henry.rodriguez@test.org",
+      "phone": "555691948",
+      "age": 62,
+      "amount": 8878.95,
+      "date": "2024-06-25"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 8,
+    "source_id": "source-4",
+    "source_record_id": "rec-0008",
+    "data": {
+      "name": "Grace Jones",
+      "email": "grace.jones@example.com",
+      "phone": "555170307",
+      "age": 32,
+      "amount": 5103.34,
+      "date": "2024-06-04"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 9,
+    "source_id": "source-3",
+    "source_record_id": "rec-0009",
+    "data": {
+      "name": "Eve Miller",
+      "email": "eve.miller@example.com",
+      "phone": "555844962",
+      "age": 47,
+      "amount": 3406.03,
+      "date": "2024-09-28"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 10,
+    "source_id": "source-3",
+    "source_record_id": "rec-0010",
+    "data": {
+      "name": "Alice Rodriguez",
+      "email": "alice.rodriguez@test.org",
+      "phone": "555608821",
+      "age": 72,
+      "amount": 3344.96,
+      "date": "2024-01-10"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 11,
+    "source_id": "source-1",
+    "source_record_id": "rec-0011",
+    "data": {
+      "name": "Diana Smith",
+      "email": "diana.smith@sample.io",
+      "phone": "555116236",
+      "age": 80,
+      "amount": 3023.49,
+      "date": "2024-07-07"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 12,
+    "source_id": "source-4",
+    "source_record_id": "rec-0012",
+    "data": {
+      "name": "Eve Martinez",
+      "email": "eve.martinez@test.org",
+      "phone": "555912586",
+      "age": 66,
+      "amount": 8170.14,
+      "date": "2024-07-20"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 13,
+    "source_id": "source-2",
+    "source_record_id": "rec-0013",
+    "data": {
+      "name": "Alice Williams",
+      "email": "alice.williams@test.org",
+      "phone": "555758107",
+      "age": 30,
+      "amount": 4926.59,
+      "date": "2024-12-08"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 14,
+    "source_id": "source-4",
+    "source_record_id": "rec-0014",
+    "data": {
+      "name": "Diana Brown",
+      "email": "diana.brown@test.org",
+      "phone": "555519685",
+      "age": 61,
+      "amount": 7098.88,
+      "date": "2024-08-23"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 15,
+    "source_id": "source-1",
+    "source_record_id": "rec-0015",
+    "data": {
+      "name": "Frank Davis",
+      "email": "frank.davis@sample.io",
+      "phone": "555820241",
+      "age": 63,
+      "amount": 6202.76,
+      "date": "2024-05-10"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 16,
+    "source_id": "source-5",
+    "source_record_id": "rec-0016",
+    "data": {
+      "name": "John Smith",
+      "email": "john.smith@example.com",
+      "phone": "555969231",
+      "age": 32,
+      "amount": 779.42,
+      "date": "2024-07-24"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 17,
+    "source_id": "source-5",
+    "source_record_id": "rec-0017",
+    "data": {
+      "name": "Frank Martinez",
+      "email": "frank.martinez@demo.net",
+      "phone": "555120614",
+      "age": 35,
+      "amount": 8386.93,
+      "date": "2024-01-24"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 18,
+    "source_id": "source-3",
+    "source_record_id": "rec-0018",
+    "data": {
+      "name": "Grace Jones",
+      "email": "grace.jones@example.com",
+      "phone": "555694224",
+      "age": 31,
+      "amount": 3446.94,
+      "date": "2024-01-05"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 19,
+    "source_id": "source-3",
+    "source_record_id": "rec-0019",
+    "data": {
+      "name": "Diana Davis",
+      "email": "diana.davis@test.org",
+      "phone": "555232466",
+      "age": 78,
+      "amount": 4578.61,
+      "date": "2024-07-24"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 20,
+    "source_id": "source-3",
+    "source_record_id": "rec-0020",
+    "data": {
+      "name": "John Garcia",
+      "email": "john.garcia@test.org",
+      "phone": "555452810",
+      "age": 73,
+      "amount": 5544.06,
+      "date": "2024-01-28"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 21,
+    "source_id": "source-1",
+    "source_record_id": "rec-0021",
+    "data": {
+      "name": "John Rodriguez",
+      "email": "john.rodriguez@example.com",
+      "phone": "555792806",
+      "age": 52,
+      "amount": 9590.78,
+      "date": "2024-11-14"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 22,
+    "source_id": "source-3",
+    "source_record_id": "rec-0022",
+    "data": {
+      "name": "John Davis",
+      "email": "john.davis@sample.io",
+      "phone": "555189590",
+      "age": 79,
+      "amount": 191.3,
+      "date": "2024-07-20"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 23,
+    "source_id": "source-5",
+    "source_record_id": "rec-0023",
+    "data": {
+      "name": "Eve Johnson",
+      "email": "eve.johnson@example.com",
+      "phone": "555262658",
+      "age": 18,
+      "amount": 6010.62,
+      "date": "2024-05-22"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 24,
+    "source_id": "source-3",
+    "source_record_id": "rec-0024",
+    "data": {
+      "name": "Alice Garcia",
+      "email": "alice.garcia@example.com",
+      "phone": "555863633",
+      "age": 20,
+      "amount": 1371.76,
+      "date": "2024-10-17"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 25,
+    "source_id": "source-1",
+    "source_record_id": "rec-0025",
+    "data": {
+      "name": "Frank Garcia",
+      "email": "frank.garcia@test.org",
+      "phone": "555774843",
+      "age": 75,
+      "amount": 9967.54,
+      "date": "2024-05-01"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 26,
+    "source_id": "source-2",
+    "source_record_id": "rec-0026",
+    "data": {
+      "name": "Eve Martinez",
+      "email": "eve.martinez@demo.net",
+      "phone": "555505974",
+      "age": 34,
+      "amount": 4938.34,
+      "date": "2024-10-09"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 27,
+    "source_id": "source-2",
+    "source_record_id": "rec-0027",
+    "data": {
+      "name": "Henry Smith",
+      "email": "henry.smith@demo.net",
+      "phone": "555549803",
+      "age": 31,
+      "amount": 4483.93,
+      "date": "2024-12-02"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 28,
+    "source_id": "source-1",
+    "source_record_id": "rec-0028",
+    "data": {
+      "name": "John Williams",
+      "email": "john.williams@example.com",
+      "phone": "555972602",
+      "age": 50,
+      "amount": 862.42,
+      "date": "2024-03-12"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 29,
+    "source_id": "source-1",
+    "source_record_id": "rec-0029",
+    "data": {
+      "name": "Bob Rodriguez",
+      "email": "bob.rodriguez@example.com",
+      "phone": "555233022",
+      "age": 46,
+      "amount": 6481.47,
+      "date": "2024-08-10"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 30,
+    "source_id": "source-4",
+    "source_record_id": "rec-0030",
+    "data": {
+      "name": "Eve Johnson",
+      "email": "eve.johnson@test.org",
+      "phone": "555363951",
+      "age": 22,
+      "amount": 3285.78,
+      "date": "2024-08-02"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 31,
+    "source_id": "source-1",
+    "source_record_id": "rec-0031",
+    "data": {
+      "name": "Charlie Williams",
+      "email": "charlie.williams@demo.net",
+      "phone": "555749823",
+      "age": 67,
+      "amount": 7069.36,
+      "date": "2024-12-19"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 32,
+    "source_id": "source-3",
+    "source_record_id": "rec-0032",
+    "data": {
+      "name": "Charlie Smith",
+      "email": "charlie.smith@demo.net",
+      "phone": "555103675",
+      "age": 38,
+      "amount": 5824.76,
+      "date": "2024-10-11"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 33,
+    "source_id": "source-3",
+    "source_record_id": "rec-0033",
+    "data": {
+      "name": "Diana Jones",
+      "email": "diana.jones@demo.net",
+      "phone": "555416681",
+      "age": 35,
+      "amount": 7659.12,
+      "date": "2024-07-09"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 34,
+    "source_id": "source-1",
+    "source_record_id": "rec-0034",
+    "data": {
+      "name": "Alice Rodriguez",
+      "email": "alice.rodriguez@demo.net",
+      "phone": "555351722",
+      "age": 24,
+      "amount": 3495.67,
+      "date": "2024-09-12"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 35,
+    "source_id": "source-5",
+    "source_record_id": "rec-0035",
+    "data": {
+      "name": "Jane Jones",
+      "email": "jane.jones@test.org",
+      "phone": "555458187",
+      "age": 39,
+      "amount": 6991.16,
+      "date": "2024-10-11"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 36,
+    "source_id": "source-2",
+    "source_record_id": "rec-0036",
+    "data": {
+      "name": "Jane Johnson",
+      "email": "jane.johnson@test.org",
+      "phone": "555116194",
+      "age": 34,
+      "amount": 7921.06,
+      "date": "2024-06-14"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 37,
+    "source_id": "source-5",
+    "source_record_id": "rec-0037",
+    "data": {
+      "name": "Henry Rodriguez",
+      "email": "henry.rodriguez@example.com",
+      "phone": "555366697",
+      "age": 43,
+      "amount": 3034.59,
+      "date": "2024-12-16"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 38,
+    "source_id": "source-4",
+    "source_record_id": "rec-0038",
+    "data": {
+      "name": "Alice Davis",
+      "email": "alice.davis@test.org",
+      "phone": "555981665",
+      "age": 75,
+      "amount": 5401.38,
+      "date": "2024-05-05"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 39,
+    "source_id": "source-5",
+    "source_record_id": "rec-0039",
+    "data": {
+      "name": "John Jones",
+      "email": "john.jones@test.org",
+      "phone": "555720455",
+      "age": 74,
+      "amount": 1664.56,
+      "date": "2024-09-12"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 40,
+    "source_id": "source-1",
+    "source_record_id": "rec-0040",
+    "data": {
+      "name": "John Johnson",
+      "email": "john.johnson@demo.net",
+      "phone": "555519628",
+      "age": 77,
+      "amount": 1352.91,
+      "date": "2024-09-16"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 41,
+    "source_id": "source-3",
+    "source_record_id": "rec-0041",
+    "data": {
+      "name": "Bob Brown",
+      "email": "bob.brown@demo.net",
+      "phone": "555177926",
+      "age": 68,
+      "amount": 1513.67,
+      "date": "2024-06-17"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 42,
+    "source_id": "source-2",
+    "source_record_id": "rec-0042",
+    "data": {
+      "name": "Bob Johnson",
+      "email": "bob.johnson@test.org",
+      "phone": "555738980",
+      "age": 50,
+      "amount": 3735.03,
+      "date": "2024-01-25"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 43,
+    "source_id": "source-3",
+    "source_record_id": "rec-0043",
+    "data": {
+      "name": "Jane Garcia",
+      "email": "jane.garcia@sample.io",
+      "phone": "555294033",
+      "age": 58,
+      "amount": 1533.73,
+      "date": "2024-04-22"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 44,
+    "source_id": "source-1",
+    "source_record_id": "rec-0044",
+    "data": {
+      "name": "Charlie Brown",
+      "email": "charlie.brown@demo.net",
+      "phone": "555673385",
+      "age": 23,
+      "amount": 5810.7,
+      "date": "2024-11-22"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 45,
+    "source_id": "source-2",
+    "source_record_id": "rec-0045",
+    "data": {
+      "name": "Diana Johnson",
+      "email": "diana.johnson@demo.net",
+      "phone": "555131453",
+      "age": 73,
+      "amount": 3211.42,
+      "date": "2024-09-18"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 46,
+    "source_id": "source-5",
+    "source_record_id": "rec-0046",
+    "data": {
+      "name": "Jane Davis",
+      "email": "jane.davis@sample.io",
+      "phone": "555653198",
+      "age": 66,
+      "amount": 2101.43,
+      "date": "2024-06-17"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 47,
+    "source_id": "source-1",
+    "source_record_id": "rec-0047",
+    "data": {
+      "name": "Eve Williams",
+      "email": "eve.williams@example.com",
+      "phone": "555213378",
+      "age": 43,
+      "amount": 1009.09,
+      "date": "2024-08-02"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 48,
+    "source_id": "source-5",
+    "source_record_id": "rec-0048",
+    "data": {
+      "name": "Alice Smith",
+      "email": "alice.smith@demo.net",
+      "phone": "555233739",
+      "age": 38,
+      "amount": 5756.36,
+      "date": "2024-07-07"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 49,
+    "source_id": "source-3",
+    "source_record_id": "rec-0049",
+    "data": {
+      "name": "Grace Smith",
+      "email": "grace.smith@example.com",
+      "phone": "555969125",
+      "age": 55,
+      "amount": 86.8,
+      "date": "2024-06-07"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 50,
+    "source_id": "source-1",
+    "source_record_id": "rec-0050",
+    "data": {
+      "name": "Charlie Davis",
+      "email": "charlie.davis@sample.io",
+      "phone": "555366256",
+      "age": 46,
+      "amount": 371.34,
+      "date": "2024-04-06"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 51,
+    "source_id": "source-1",
+    "source_record_id": "rec-0051",
+    "data": {
+      "name": "Alice Rodriguez",
+      "email": "alice.rodriguez@test.org",
+      "phone": "555597890",
+      "age": 33,
+      "amount": 3054.07,
+      "date": "2024-08-04"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 52,
+    "source_id": "source-2",
+    "source_record_id": "rec-0052",
+    "data": {
+      "name": "Jane Smith",
+      "email": "jane.smith@example.com",
+      "phone": "555880568",
+      "age": 56,
+      "amount": 134.97,
+      "date": "2024-03-04"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 53,
+    "source_id": "source-5",
+    "source_record_id": "rec-0053",
+    "data": {
+      "name": "Bob Johnson",
+      "email": "bob.johnson@demo.net",
+      "phone": "555535991",
+      "age": 29,
+      "amount": 7160.67,
+      "date": "2024-09-10"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 54,
+    "source_id": "source-4",
+    "source_record_id": "rec-0054",
+    "data": {
+      "name": "John Jones",
+      "email": "john.jones@example.com",
+      "phone": "555519330",
+      "age": 40,
+      "amount": 3572.07,
+      "date": "2024-04-04"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 55,
+    "source_id": "source-1",
+    "source_record_id": "rec-0055",
+    "data": {
+      "name": "Bob Smith",
+      "email": "bob.smith@demo.net",
+      "phone": "555326143",
+      "age": 69,
+      "amount": 3860.69,
+      "date": "2024-02-18"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 56,
+    "source_id": "source-3",
+    "source_record_id": "rec-0056",
+    "data": {
+      "name": "Jane Smith",
+      "email": "jane.smith@demo.net",
+      "phone": "555112173",
+      "age": 35,
+      "amount": 8381.16,
+      "date": "2024-01-12"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 57,
+    "source_id": "source-1",
+    "source_record_id": "rec-0057",
+    "data": {
+      "name": "Diana Williams",
+      "email": "diana.williams@example.com",
+      "phone": "555528395",
+      "age": 57,
+      "amount": 7812.77,
+      "date": "2024-03-08"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 58,
+    "source_id": "source-3",
+    "source_record_id": "rec-0058",
+    "data": {
+      "name": "Jane Rodriguez",
+      "email": "jane.rodriguez@test.org",
+      "phone": "555860472",
+      "age": 50,
+      "amount": 1521.26,
+      "date": "2024-10-06"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 59,
+    "source_id": "source-5",
+    "source_record_id": "rec-0059",
+    "data": {
+      "name": "Alice Smith",
+      "email": "alice.smith@test.org",
+      "phone": "555729398",
+      "age": 78,
+      "amount": 3319.98,
+      "date": "2024-07-09"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 60,
+    "source_id": "source-1",
+    "source_record_id": "rec-0060",
+    "data": {
+      "name": "Frank Williams",
+      "email": "frank.williams@sample.io",
+      "phone": "555225320",
+      "age": 45,
+      "amount": 7673.26,
+      "date": "2024-03-18"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 61,
+    "source_id": "source-5",
+    "source_record_id": "rec-0061",
+    "data": {
+      "name": "John Rodriguez",
+      "email": "john.rodriguez@test.org",
+      "phone": "555932448",
+      "age": 23,
+      "amount": 2186.85,
+      "date": "2024-03-07"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 62,
+    "source_id": "source-2",
+    "source_record_id": "rec-0062",
+    "data": {
+      "name": "Charlie Rodriguez",
+      "email": "charlie.rodriguez@demo.net",
+      "phone": "555490886",
+      "age": 68,
+      "amount": 6768.44,
+      "date": "2024-12-22"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 63,
+    "source_id": "source-1",
+    "source_record_id": "rec-0063",
+    "data": {
+      "name": "Jane Garcia",
+      "email": "jane.garcia@demo.net",
+      "phone": "555732978",
+      "age": 31,
+      "amount": 2528.63,
+      "date": "2024-10-17"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 64,
+    "source_id": "source-2",
+    "source_record_id": "rec-0064",
+    "data": {
+      "name": "Grace Miller",
+      "email": "grace.miller@test.org",
+      "phone": "555660548",
+      "age": 22,
+      "amount": 4179.55,
+      "date": "2024-06-01"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 65,
+    "source_id": "source-4",
+    "source_record_id": "rec-0065",
+    "data": {
+      "name": "Alice Rodriguez",
+      "email": "alice.rodriguez@test.org",
+      "phone": "555517315",
+      "age": 68,
+      "amount": 3064.89,
+      "date": "2024-01-05"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 66,
+    "source_id": "source-5",
+    "source_record_id": "rec-0066",
+    "data": {
+      "name": "Diana Garcia",
+      "email": "diana.garcia@test.org",
+      "phone": "555634662",
+      "age": 40,
+      "amount": 260.94,
+      "date": "2024-02-06"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 67,
+    "source_id": "source-1",
+    "source_record_id": "rec-0067",
+    "data": {
+      "name": "Bob Smith",
+      "email": "bob.smith@sample.io",
+      "phone": "555467595",
+      "age": 77,
+      "amount": 3362.68,
+      "date": "2024-07-22"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 68,
+    "source_id": "source-1",
+    "source_record_id": "rec-0068",
+    "data": {
+      "name": "Alice Rodriguez",
+      "email": "alice.rodriguez@test.org",
+      "phone": "555492415",
+      "age": 23,
+      "amount": 2787.74,
+      "date": "2024-12-12"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 69,
+    "source_id": "source-5",
+    "source_record_id": "rec-0069",
+    "data": {
+      "name": "Henry Davis",
+      "email": "henry.davis@demo.net",
+      "phone": "555288148",
+      "age": 75,
+      "amount": 4565.12,
+      "date": "2024-10-09"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 70,
+    "source_id": "source-5",
+    "source_record_id": "rec-0070",
+    "data": {
+      "name": "Jane Davis",
+      "email": "jane.davis@demo.net",
+      "phone": "555838059",
+      "age": 63,
+      "amount": 7994.23,
+      "date": "2024-09-12"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 71,
+    "source_id": "source-1",
+    "source_record_id": "rec-0071",
+    "data": {
+      "name": "Alice Jones",
+      "email": "alice.jones@example.com",
+      "phone": "555373127",
+      "age": 75,
+      "amount": 3097.78,
+      "date": "2024-10-26"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 72,
+    "source_id": "source-5",
+    "source_record_id": "rec-0072",
+    "data": {
+      "name": "Charlie Rodriguez",
+      "email": "charlie.rodriguez@test.org",
+      "phone": "555555423",
+      "age": 25,
+      "amount": 4780.4,
+      "date": "2024-08-12"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 73,
+    "source_id": "source-3",
+    "source_record_id": "rec-0073",
+    "data": {
+      "name": "John Martinez",
+      "email": "john.martinez@sample.io",
+      "phone": "555850055",
+      "age": 72,
+      "amount": 4813.71,
+      "date": "2024-07-08"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 74,
+    "source_id": "source-1",
+    "source_record_id": "rec-0074",
+    "data": {
+      "name": "Charlie Jones",
+      "email": "charlie.jones@example.com",
+      "phone": "555926054",
+      "age": 73,
+      "amount": 7338.45,
+      "date": "2024-12-23"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 75,
+    "source_id": "source-5",
+    "source_record_id": "rec-0075",
+    "data": {
+      "name": "Eve Jones",
+      "email": "eve.jones@example.com",
+      "phone": "555496846",
+      "age": 20,
+      "amount": 8561.99,
+      "date": "2024-05-10"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 76,
+    "source_id": "source-3",
+    "source_record_id": "rec-0076",
+    "data": {
+      "name": "Grace Martinez",
+      "email": "grace.martinez@sample.io",
+      "phone": "555141732",
+      "age": 73,
+      "amount": 7842.03,
+      "date": "2024-09-23"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 77,
+    "source_id": "source-3",
+    "source_record_id": "rec-0077",
+    "data": {
+      "name": "Bob Brown",
+      "email": "bob.brown@demo.net",
+      "phone": "555519217",
+      "age": 22,
+      "amount": 9701.25,
+      "date": "2024-05-04"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 78,
+    "source_id": "source-5",
+    "source_record_id": "rec-0078",
+    "data": {
+      "name": "Diana Garcia",
+      "email": "diana.garcia@example.com",
+      "phone": "555679064",
+      "age": 38,
+      "amount": 3424.91,
+      "date": "2024-07-11"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 79,
+    "source_id": "source-1",
+    "source_record_id": "rec-0079",
+    "data": {
+      "name": "Henry Jones",
+      "email": "henry.jones@sample.io",
+      "phone": "555384614",
+      "age": 75,
+      "amount": 1558.3,
+      "date": "2024-01-24"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 80,
+    "source_id": "source-4",
+    "source_record_id": "rec-0080",
+    "data": {
+      "name": "Charlie Brown",
+      "email": "charlie.brown@test.org",
+      "phone": "555288865",
+      "age": 52,
+      "amount": 5190.71,
+      "date": "2024-01-24"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 81,
+    "source_id": "source-5",
+    "source_record_id": "rec-0081",
+    "data": {
+      "name": "Grace Williams",
+      "email": "grace.williams@sample.io",
+      "phone": "555250600",
+      "age": 46,
+      "amount": 4941.34,
+      "date": "2024-02-26"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 82,
+    "source_id": "source-4",
+    "source_record_id": "rec-0082",
+    "data": {
+      "name": "Jane Martinez",
+      "email": "jane.martinez@example.com",
+      "phone": "555161239",
+      "age": 41,
+      "amount": 3500.7,
+      "date": "2024-03-05"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 83,
+    "source_id": "source-4",
+    "source_record_id": "rec-0083",
+    "data": {
+      "name": "Eve Martinez",
+      "email": "eve.martinez@test.org",
+      "phone": "555183664",
+      "age": 75,
+      "amount": 9168.34,
+      "date": "2024-07-27"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 84,
+    "source_id": "source-2",
+    "source_record_id": "rec-0084",
+    "data": {
+      "name": "Jane Johnson",
+      "email": "jane.johnson@demo.net",
+      "phone": "555991862",
+      "age": 76,
+      "amount": 9597.65,
+      "date": "2024-12-27"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 85,
+    "source_id": "source-3",
+    "source_record_id": "rec-0085",
+    "data": {
+      "name": "Bob Johnson",
+      "email": "bob.johnson@example.com",
+      "phone": "555481824",
+      "age": 37,
+      "amount": 7801.99,
+      "date": "2024-06-17"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 86,
+    "source_id": "source-3",
+    "source_record_id": "rec-0086",
+    "data": {
+      "name": "Charlie Miller",
+      "email": "charlie.miller@demo.net",
+      "phone": "555663355",
+      "age": 73,
+      "amount": 5124.77,
+      "date": "2024-05-19"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 87,
+    "source_id": "source-1",
+    "source_record_id": "rec-0087",
+    "data": {
+      "name": "Diana Williams",
+      "email": "diana.williams@sample.io",
+      "phone": "555399596",
+      "age": 48,
+      "amount": 9647.28,
+      "date": "2024-11-24"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 88,
+    "source_id": "source-3",
+    "source_record_id": "rec-0088",
+    "data": {
+      "name": "John Miller",
+      "email": "john.miller@sample.io",
+      "phone": "555541676",
+      "age": 21,
+      "amount": 481.06,
+      "date": "2024-07-11"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 89,
+    "source_id": "source-5",
+    "source_record_id": "rec-0089",
+    "data": {
+      "name": "Jane Miller",
+      "email": "jane.miller@test.org",
+      "phone": "555398934",
+      "age": 63,
+      "amount": 6671.19,
+      "date": "2024-03-10"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 90,
+    "source_id": "source-2",
+    "source_record_id": "rec-0090",
+    "data": {
+      "name": "Charlie Williams",
+      "email": "charlie.williams@sample.io",
+      "phone": "555821058",
+      "age": 33,
+      "amount": 6666.15,
+      "date": "2024-10-27"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 91,
+    "source_id": "source-5",
+    "source_record_id": "rec-0091",
+    "data": {
+      "name": "Bob Rodriguez",
+      "email": "bob.rodriguez@example.com",
+      "phone": "555323848",
+      "age": 73,
+      "amount": 2148.45,
+      "date": "2024-10-25"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 92,
+    "source_id": "source-2",
+    "source_record_id": "rec-0092",
+    "data": {
+      "name": "Grace Garcia",
+      "email": "grace.garcia@sample.io",
+      "phone": "555817372",
+      "age": 64,
+      "amount": 6315.28,
+      "date": "2024-01-04"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 93,
+    "source_id": "source-4",
+    "source_record_id": "rec-0093",
+    "data": {
+      "name": "Henry Smith",
+      "email": "henry.smith@example.com",
+      "phone": "555316762",
+      "age": 30,
+      "amount": 942.6,
+      "date": "2024-07-08"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 94,
+    "source_id": "source-1",
+    "source_record_id": "rec-0094",
+    "data": {
+      "name": "Alice Martinez",
+      "email": "alice.martinez@example.com",
+      "phone": "555734613",
+      "age": 42,
+      "amount": 7409.65,
+      "date": "2024-08-28"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 95,
+    "source_id": "source-4",
+    "source_record_id": "rec-0095",
+    "data": {
+      "name": "Bob Rodriguez",
+      "email": "bob.rodriguez@test.org",
+      "phone": "555236391",
+      "age": 73,
+      "amount": 1880.64,
+      "date": "2024-09-03"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 96,
+    "source_id": "source-2",
+    "source_record_id": "rec-0096",
+    "data": {
+      "name": "Jane Brown",
+      "email": "jane.brown@example.com",
+      "phone": "555877870",
+      "age": 36,
+      "amount": 4445.06,
+      "date": "2024-10-21"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 97,
+    "source_id": "source-2",
+    "source_record_id": "rec-0097",
+    "data": {
+      "name": "Henry Johnson",
+      "email": "henry.johnson@example.com",
+      "phone": "555774964",
+      "age": 35,
+      "amount": 170.78,
+      "date": "2024-08-09"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 98,
+    "source_id": "source-2",
+    "source_record_id": "rec-0098",
+    "data": {
+      "name": "Grace Rodriguez",
+      "email": "grace.rodriguez@demo.net",
+      "phone": "555648827",
+      "age": 76,
+      "amount": 3617.87,
+      "date": "2024-02-07"
+    },
+    "raw_data": null
+  },
+  {
+    "id": 99,
+    "source_id": "source-1",
+    "source_record_id": "rec-0099",
+    "data": {
+      "name": "Bob Brown",
+      "email": "bob.brown@demo.net",
+      "phone": "555174970",
+      "age": 77,
+      "amount": 6375.88,
+      "date": "2024-02-16"
+    },
+    "raw_data": null
+  }
+]

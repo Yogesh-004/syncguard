@@ -1,0 +1,43 @@
+datasets:
+  febrl3:
+    source: recordlinkage
+    task: entity_resolution
+    ground_truth: true
+    license: needs_verification
+    retrieval_method: python_package
+    python_import: recordlinkage.datasets.load_febrl3
+    records: 5000
+    citation: Christen P. Febrl - Freely Extensible Biomedical Record Linkage. 2008.
+    notes: FEBRL3 is synthetic but structure mimics real record linkage; loaded via recordlinkage.datasets.load_febrl3(return_links=True)
+
+  walmart_amazon:
+    source: deepmatcher
+    task: entity_matching
+    ground_truth: true
+    license: needs_verification
+    retrieval_method: documented_source
+    official_urls:
+      - https://github.com/anhaidgroup/deepmatcher/blob/master/Datasets.md
+      - http://pages.cs.wisc.edu/~anhai/data1/deepmatcher_data.tar.gz
+    files:
+      - train.csv
+      - valid.csv
+      - test.csv
+    citation: Mudgal et al. Deep Learning for Entity Matching. SIGMOD 2018. DeepMatcher datasets.
+    notes: Labeled record pairs (match/non-match). Use official DeepMatcher tarball; do not redistribute raw copies without verifying license.
+
+  amazon_google:
+    source: deepmatcher
+    task: entity_matching
+    ground_truth: true
+    license: needs_verification
+    retrieval_method: documented_source
+    official_urls:
+      - https://github.com/anhaidgroup/deepmatcher/blob/master/Datasets.md
+      - http://pages.cs.wisc.edu/~anhai/data1/deepmatcher_data.tar.gz
+    files:
+      - train.csv
+      - valid.csv
+      - test.csv
+    citation: Mudgal et al. DeepMatcher Amazon-Google. SIGMOD 2018.
+    status: deferred_until_first_two_pass

@@ -1,0 +1,22 @@
+{
+  "features": [
+    "name_sim",
+    "pc_exact",
+    "ext_exact",
+    "suburb_sim",
+    "dob_exact",
+    "token_overlap",
+    "len_diff"
+  ],
+  "metrics": {
+    "precision": 1.0,
+    "recall": 0.7605,
+    "f1": 0.8639,
+    "tp": 4972,
+    "fp": 0,
+    "fn": 1566,
+    "pred_count": 4972,
+    "truth_count": 6538
+  },
+  "train_size": 13076
+}

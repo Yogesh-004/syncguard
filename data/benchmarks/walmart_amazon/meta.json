@@ -1,0 +1,17 @@
+{
+  "dataset": "walmart_amazon",
+  "official_urls": [
+    "http://pages.cs.wisc.edu/~anhai/data1/deepmatcher_data.tar.gz",
+    "https://github.com/anhaidgroup/deepmatcher/blob/master/Datasets.md"
+  ],
+  "local_path": "data\\benchmarks\\walmart_amazon",
+  "expected_files": [
+    "train.csv",
+    "valid.csv",
+    "test.csv"
+  ],
+  "ground_truth": "label column (1=match)",
+  "license": "needs_verification",
+  "retrieval_date": "2026-09-02T03:26:54.682517",
+  "instructions": "Download tarball, extract Walmart-Amazon folder to data/benchmarks/walmart_amazon/. Do not commit raw CSVs without license check."
+}
