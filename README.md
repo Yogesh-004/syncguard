@@ -72,7 +72,12 @@ OpenAPI at `/docs`. Key endpoints: `POST /sources` (+ list/get/delete), `POST /u
 
 ## 10. Deployment
 
-Local-first. `docker compose up` provides backend/Postgres/Redis/worker for local validation (compose app image not yet built in CI; Postgres service verified). No Redis/worker required for the core product (inline path). ENV=production requires PostgreSQL — SQLite fallback is refused at boot — plus SECRET_KEY and API_KEY. No public deployment yet; Railway not deployed.
+Local Docker validated (Phase 8C): `docker compose up postgres syncguard` —
+fresh PostgreSQL → `alembic upgrade head` → backend on `$PORT` (default 8000)
+→ `/health` + `/readyz` green, model loaded, full reconciliation-to-verified-sync
+E2E green. Set `ENV=production`, `SECRET_KEY`, `API_KEY` (placeholders refused).
+No Redis/worker required for the core product (inline path). No public deployment
+yet; Railway/Supabase/Render not connected.
 
 ## 11. Limitations
 

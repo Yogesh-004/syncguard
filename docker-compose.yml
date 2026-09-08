@@ -32,18 +32,22 @@ services:
     ports:
       - "8000:8000"
     environment:
+      # Local-validation values only. Production MUST set SECRET_KEY and
+      # API_KEY from secrets (placeholder SECRET_KEY is refused at boot).
+      ENV: "production"
+      PORT: "8000"
+      SECRET_KEY: "local-validation-only-not-a-secret"
+      API_KEY: "local-validation-key"
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/syncguard
-      REDIS_URL: redis://redis:6379/0
-      CELERY_BROKER_URL: redis://redis:6379/0
-      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      SYNCGUARD_PG_TARGET: postgresql://postgres:postgres@sg-sync-target:5432/syncguard_target
       DEMO_MODE: "true"
       CORS_ORIGINS: "*"
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_healthy
-    command: ["python", "-m", "uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    # NOTE: image CMD runs `alembic upgrade head` then uvicorn on $PORT.
+    # redis/worker below are OPTIONAL local infrastructure only; the core
+    # product runs inline and the backend does not depend on them.
 
   celery-worker:
     build: .
