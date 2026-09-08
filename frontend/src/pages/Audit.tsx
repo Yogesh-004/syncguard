@@ -5,6 +5,11 @@ export default function Audit(){
   const [logs, setLogs]=useState<any[]>([])
   const [filter, setFilter]=useState('')
   const [filterAction, setFilterAction]=useState('')
+  const _activeLive = typeof window!=='undefined' ? localStorage.getItem('activeLiveSourceId') : null
+  const [scopeMode, setScopeMode]=useState(_activeLive ? 'LIVE_SOURCE' : 'ALL')
+  const [scopeJob, setScopeJob]=useState(typeof window!=='undefined' ? (localStorage.getItem('activeJobId') || '') : '')
+  const [scopeSource, setScopeSource]=useState(_activeLive || '')
+  const [scopeInfo, setScopeInfo]=useState<any>({})
   const [loading, setLoading]=useState(true)
   const [total, setTotal]=useState(0)
   const [selected, setSelected]=useState<any>(null)
@@ -12,12 +17,16 @@ export default function Audit(){
   async function load(){
     setLoading(true)
     try{
-      const r=await api.get(`/audit-logs?limit=50`)
+      const params:any={ limit:50 }
+      if(scopeMode==='LIVE_JOB' && scopeJob) params.job_id=scopeJob
+      else if(scopeMode==='LIVE_SOURCE' && scopeSource) params.source_id=scopeSource
+      const r=await api.get(`/audit-logs`, { params })
       setLogs(r.data.items||[])
       setTotal(r.data.total||0)
+      setScopeInfo(r.data.scope||{})
     }catch{} finally{ setLoading(false)}
   }
-  useEffect(()=>{ load(); const iv=setInterval(load, 5000); return ()=>clearInterval(iv) },[])
+  useEffect(()=>{ load(); const iv=setInterval(load, 5000); return ()=>clearInterval(iv) },[scopeMode, scopeJob, scopeSource])
 
   const filtered = logs.filter(l=>{
     if(filter && !(l.action.includes(filter) || l.entity_type?.includes(filter) || String(l.entity_id).includes(filter) || JSON.stringify(l.details||'').includes(filter))) return false
@@ -41,6 +50,12 @@ export default function Audit(){
       </div>
 
       <div style={{background:'#1e293b', border:'1px solid #334155', borderRadius:12, padding:12, marginTop:16, display:'flex', gap:8, flexWrap:'wrap', alignItems:'center'}}>
+        <select value={scopeMode} onChange={e=>setScopeMode(e.target.value)} style={{background:'#0f172a', border:'1px solid #334155', color:'white', padding:'6px 10px', borderRadius:8, fontSize:13}}>
+          <option value="ALL">MODE: ALL</option><option value="LIVE_JOB">MODE: LIVE (by job)</option><option value="LIVE_SOURCE">MODE: LIVE (by source)</option>
+        </select>
+        {scopeMode==='LIVE_JOB' && <input placeholder="Job ID..." value={scopeJob} onChange={e=>setScopeJob(e.target.value)} style={{background:'#0f172a', border:'1px solid #334155', color:'white', padding:'6px 10px', borderRadius:8, fontSize:13, width:100}} />}
+        {scopeMode==='LIVE_SOURCE' && <input placeholder="Source ID..." value={scopeSource} onChange={e=>setScopeSource(e.target.value)} style={{background:'#0f172a', border:'1px solid #334155', color:'white', padding:'6px 10px', borderRadius:8, fontSize:13, width:110}} />}
+        <span style={{color:'#64748b', fontSize:11}}>DEMO/BENCHMARK stay on their pages — server filters by job/source lineage{scopeInfo.mode?` • scope: ${JSON.stringify(scopeInfo)}`:''}</span>
         <input placeholder="Search action, entity, id, details..." value={filter} onChange={e=>setFilter(e.target.value)} style={{background:'#0f172a', border:'1px solid #334155', color:'white', padding:'8px 12px', borderRadius:8, flex:1, minWidth:200}} />
         <select value={filterAction} onChange={e=>setFilterAction(e.target.value)} style={{background:'#0f172a', border:'1px solid #334155', color:'white', padding:'6px 10px', borderRadius:8, fontSize:13}}>
           <option value="">All actions</option>

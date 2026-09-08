@@ -1,0 +1,13 @@
+pair_id,case,expected,name_a,name_b,email_a,email_b,phone_a,phone_b,postcode_a,postcode_b,suburb_a,suburb_b,ext_a,ext_b
+T01,A_easy_positive,same,Anil Menon,Anil Menon,anil.menon@x.com,anil.menon@x.com,9810000001,9810000001,560001,560001,Koramangala,Koramangala,CUST-9001,CUST-9001
+T02,B_noisy_typo,same,Jonathon Pryce,Jonathan Pryce,jonathon.pryce@x.com,jonathon.pryce@x.com,9810000002,9810000002,560002,560002,Indiranagar,Indiranagar,CUST-9002,CUST-9002
+T03,B_noisy_phone_format,same,Meera Nair,Meera Nair,meera.nair@x.com,meera.nair@x.com,+91 98100 00003,9810000003,560003,560003,Kochi,Kochi,CUST-9003,CUST-9003
+T04,B_noisy_missing_field,same,Dev Patel,Dev Patel,dev.patel@x.com,dev.patel@x.com,9810000004,9810000004,560004,560004,,HSR Layout,CUST-9004,CUST-9004
+T05,B_noisy_address_variant,same,Sara Thomas,Sara Thomas,sara.thomas@x.com,sara.thomas@x.com,9810000005,9810000005,560005,560005,12 Rose St,12 Rose Street,CUST-9005,CUST-9005
+T06,C_hard_positive,same,Kavya Reddy,Kavya Redy,kavya.reddy@x.com,kavya.r@x.com,98100 00006,9810000006,560006,560006,Whitefield,Whitefeild,CUST-9006,CUST-9006
+T07,D_easy_negative,different,Anil Menon,Ravi Shankar,anil.menon@x.com,ravi.shankar@y.com,9810000001,9820000001,560001,400001,Koramangala,Bandra,CUST-9001,CUST-9101
+T08,E_hard_negative_same_name,different,John Smith,John Smith,john.smith@a.com,john.smith@b.com,9810000011,9810000012,2000,2000,Sydney,Sydney,,
+T09,E_hard_negative_same_postcode,different,Asha Rao,Vikram Nair,asha.rao@x.com,vikram.nair@x.com,9810000021,9810000022,560001,560001,Koramangala,Koramangala,,
+T10,E_hard_negative_same_phone_pattern,different,Arun Kumar,Arun Kumar,arun.k@x.com,arun.kumar@y.com,9810000031,9810000032,560011,560012,Peenya,Peenya,,
+T11,F_contradiction_email,same_entity_records_different_email,Diana D’Souza,Diana D’Souza,diana.dsouza@x.com,diana.other@y.com,9810000041,9810000041,560021,560021,Goa,Goa,CUST-9041,CUST-9041
+T12,F_contradiction_trusted_id,different_entity_or_error,Kiran Bedi,Kiran Bedi,kiran.bedi@x.com,kiran.bedi@x.com,9810000051,9810000051,560031,560031,Delhi,Delhi,CUST-9051,CUST-9151

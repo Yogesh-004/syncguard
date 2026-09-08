@@ -9,7 +9,7 @@ export default function Landing() {
     Promise.allSettled([
       api.get('/records?limit=1'),
       api.get('/sources'),
-      api.get('/match?threshold=0.6&limit=100'),
+      api.get('/matches?decision=MATCH&limit=100'),
       api.get('/conflicts?limit=1'),
       api.get('/jobs'),
     ]).then(results => {
@@ -17,22 +17,22 @@ export default function Landing() {
       setLive({
         records: rec?.total ?? 0,
         sources: Array.isArray(src) ? src.length : 0,
-        matches: mat?.matches?.length ?? mat?.length ?? 0,
+        matches: mat?.total ?? mat?.items?.length ?? 0,
         conflicts: Array.isArray(conf) ? conf.length : conf?.total ?? 0,
         jobs: jobs?.total ?? 0,
       })
-      // Find Ravi spec match (the 3-record group) for exact example
-      if (mat?.matches?.length){
-        const ravi = mat.matches.find((m:any)=> m.evidence?.email?.val_a?.includes('ravi@gmail.com'))
+      // Find Ravi spec match (the 3-record group) for exact example — persisted DB matches
+      if (mat?.items?.length){
+        const ravi = mat.items.find((m:any)=> m.evidence?.email?.val_a?.includes('ravi@gmail.com'))
         if (ravi) setSpecMatch(ravi)
-        else setSpecMatch(mat.matches[0])
+        else setSpecMatch(mat.items[0])
       }
     })
   }, [])
   const d = live.records ? live : { records: 2200, sources: 4, matches: 23, conflicts: 20, jobs: 1 }
 
-  // Use trained ML confidence for spec example — exact from live model
-  const confidence = specMatch ? (specMatch.confidence*100).toFixed(1) : '98.4'
+  // Live decision-engine confidence when available (capped display: never 100% unless exact)
+  const confidence = specMatch ? (Math.min(specMatch.confidence, 0.999)*100).toFixed(1) : '—'
   const evidence = specMatch?.evidence || { email:{match:true}, phone:{match:false}, name:{match:true} }
   const isPhoneMatch = evidence.phone?.match
   const isEmailMatch = evidence.email?.match
@@ -117,9 +117,9 @@ export default function Landing() {
               <span style={{color: isNameMatch ? '#22c55e' : '#ef4444'}}>{isNameMatch ? '✓ Name (fuzzy)' : '✗ Name'}</span>
             </div>
             <div style={{marginTop:8, display:'flex', gap:8, fontSize:12}}>
-              <span style={{background:'#22c55e', color:'white', padding:'4px 10px', borderRadius:6, fontWeight:700}}>AUTO-RESOLVE</span>
-              <span style={{background:'#1e293b', border:'1px solid #334155', padding:'4px 10px', borderRadius:6}}>Low risk</span>
-              <span style={{color:'#64748b', alignSelf:'center'}}>• Model: LogisticRegression trained on all 3 benchmarks</span>
+              <span style={{background: specMatch?.evidence?.auto_resolvable ? '#22c55e' : '#f59e0b', color:'white', padding:'4px 10px', borderRadius:6, fontWeight:700}}>{specMatch?.evidence?.recommendation || 'MANUAL REVIEW'}</span>
+              <span style={{background:'#1e293b', border:'1px solid #334155', padding:'4px 10px', borderRadius:6}}>{specMatch?.evidence?.risk ? `${specMatch.evidence.risk} risk` : 'Illustrative example'}</span>
+              <span style={{color:'#64748b', alignSelf:'center'}}>• Decision engine: ML score + field evidence, never ML-alone</span>
             </div>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function Landing() {
       <section style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, margin: 20, padding: 16 }}>
         <h3 style={{ fontWeight: 700, fontSize:13 }}>Benchmarks drive all features</h3>
         <div style={{ color: '#94a3b8', marginTop: 8, fontSize: 13, lineHeight: 1.6, display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:12 }}>
-          <div><b style={{color:'#22c55e'}}>FEBRL3</b> 5K • F1 0.86 ML<br/><span style={{fontSize:11}}>5000 records, 6538 links • P 1.0 R 0.76</span></div>
+          <div><b style={{color:'#22c55e'}}>FEBRL3</b> 5K • F1 0.69 ML<br/><span style={{fontSize:11}}>5000 records, 6538 links • P 0.52 R 1.00 (within-block test)</span></div>
           <div><b style={{color:'#3b82f6'}}>Walmart-Amazon</b> 10K • F1 0.649 ML<br/><span style={{fontSize:11}}>962 pos • P 0.87 R 0.52</span></div>
           <div><b style={{color:'#8b5cf6'}}>Amazon-Google</b> 11K • F1 0.355 ML<br/><span style={{fontSize:11}}>1167 pos • trained</span></div>
         </div>

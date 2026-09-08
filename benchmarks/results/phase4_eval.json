@@ -1,0 +1,140 @@
+{
+  "dataset": "febrl3-blocked",
+  "model": "syncguard_matcher v1.0.0",
+  "split": "60/20/20 seed 42",
+  "validation_grid": [
+    {
+      "match_th": 0.5,
+      "possible_th": 0.4,
+      "match": {
+        "precision": 0.1993,
+        "recall": 0.7576,
+        "f1": 0.3156,
+        "tp": 991,
+        "fp": 3981,
+        "fn": 317
+      },
+      "possible_recall": 0.0
+    },
+    {
+      "match_th": 0.6,
+      "possible_th": 0.4,
+      "match": {
+        "precision": 0.1992,
+        "recall": 0.7569,
+        "f1": 0.3154,
+        "tp": 990,
+        "fp": 3979,
+        "fn": 318
+      },
+      "possible_recall": 0.0008
+    },
+    {
+      "match_th": 0.6,
+      "possible_th": 0.5,
+      "match": {
+        "precision": 0.1992,
+        "recall": 0.7569,
+        "f1": 0.3154,
+        "tp": 990,
+        "fp": 3979,
+        "fn": 318
+      },
+      "possible_recall": 0.0008
+    },
+    {
+      "match_th": 0.7,
+      "possible_th": 0.4,
+      "match": {
+        "precision": 0.1989,
+        "recall": 0.7538,
+        "f1": 0.3148,
+        "tp": 986,
+        "fp": 3971,
+        "fn": 322
+      },
+      "possible_recall": 0.0038
+    },
+    {
+      "match_th": 0.7,
+      "possible_th": 0.5,
+      "match": {
+        "precision": 0.1989,
+        "recall": 0.7538,
+        "f1": 0.3148,
+        "tp": 986,
+        "fp": 3971,
+        "fn": 322
+      },
+      "possible_recall": 0.0038
+    },
+    {
+      "match_th": 0.8,
+      "possible_th": 0.4,
+      "match": {
+        "precision": 0.1989,
+        "recall": 0.7523,
+        "f1": 0.3146,
+        "tp": 984,
+        "fp": 3963,
+        "fn": 324
+      },
+      "possible_recall": 0.0054
+    },
+    {
+      "match_th": 0.8,
+      "possible_th": 0.5,
+      "match": {
+        "precision": 0.1989,
+        "recall": 0.7523,
+        "f1": 0.3146,
+        "tp": 984,
+        "fp": 3963,
+        "fn": 324
+      },
+      "possible_recall": 0.0054
+    },
+    {
+      "match_th": 0.9,
+      "possible_th": 0.4,
+      "match": {
+        "precision": 0.1991,
+        "recall": 0.75,
+        "f1": 0.3146,
+        "tp": 981,
+        "fp": 3947,
+        "fn": 327
+      },
+      "possible_recall": 0.0076
+    },
+    {
+      "match_th": 0.9,
+      "possible_th": 0.5,
+      "match": {
+        "precision": 0.1991,
+        "recall": 0.75,
+        "f1": 0.3146,
+        "tp": 981,
+        "fp": 3947,
+        "fn": 327
+      },
+      "possible_recall": 0.0076
+    }
+  ],
+  "test": {
+    "MATCH": {
+      "precision": 0.1956,
+      "recall": 0.7431,
+      "f1": 0.3097,
+      "tp": 972,
+      "fp": 3997,
+      "fn": 336
+    },
+    "POSSIBLE_MATCH": {
+      "count": 0,
+      "recall": 0.0
+    },
+    "NO_MATCH_correct_rejections": 336
+  },
+  "note": "blocked candidates only (16115/12.5M); outside-block truth unrecoverable by design"
+}

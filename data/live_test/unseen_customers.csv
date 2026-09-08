@@ -1,0 +1,11 @@
+rec_id,given_name,surname,street_number,address_1,suburb,postcode,state,date_of_birth,soc_sec_id,email,phone
+live-001,Taneesha,Hartwell,12,koala court,marrickville,2204,nsw,19880317,9001001,taneesha.hartwell@example.com,9001001
+live-001-dup,Taneesha,Hartwell,12,koala court,marrickville,2204,nsw,19880317,9001001,taneesha.hartwell@example.com,9001001
+live-002,Bodhi,Quilliam,44,waratah avenue,footscray,3011,vic,19751202,9001002,bodhi.quilliam@test.org,9001002
+live-002-dup,Bodhi,Quiliam,44,waratah ave,footscray,3011,vic,19751202,9001002,bodhi.quilliam@test.org,9001002
+live-003,Elowen,Marsh,8,ibis lane,kelvin grove,4059,qld,19940611,9001003,elowen.marsh@demo.net,9001003
+live-004,Soren,Aldridge,31,quokka street,fremantle,6160,wa,19821129,9001004,soren.aldridge@sample.io,9001004
+live-005,Imogen,Blackwood,5,lyrebird close,hobart,7000,tas,19901130,9001005,imogen.blackwood@example.com,9001005
+live-005-dup,Imogen,Blackwood,5,lyrebird close,hobart,7000,tas,19901130,9001005,imogen.blackwood@example.com,9001005
+live-006,Koa,Thornberry,77,cassowary road,darwin,0800,nt,19770519,9001006,koa.thornberry@test.org,9001006
+live-007,Freya,Larkspur,19,platypus place,canberra,2600,act,20000214,9001007,freya.larkspur@demo.net,9001007

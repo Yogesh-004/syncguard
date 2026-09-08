@@ -1,0 +1,15 @@
+{
+  "candidate_pairs": 16115,
+  "MATCH": 4278,
+  "POSSIBLE_MATCH": 4,
+  "NO_MATCH": 11833,
+  "auto_total": 2341,
+  "auto_correct": 2341,
+  "auto_wrong": 0,
+  "auto_precision": 1.0,
+  "auto_recall": 0.3581,
+  "match_low_safe_incorrect": 0,
+  "blocker_samples": [],
+  "critical_contradiction_auto": 0,
+  "verdict": "RELEASE CANDIDATE"
+}
