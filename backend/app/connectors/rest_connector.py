@@ -1,4 +1,9 @@
-"""REST connector for data ingestion."""
+"""REST connector for data ingestion (READ-ONLY).
+
+Write primitives were removed in Phase 7: an ingest connector must never offer
+an unguarded synchronization path. Real writes go exclusively through the
+approved resolution → dry-run → confirm → verify pipeline.
+"""
 from typing import Any, Dict, List, Optional, Iterator
 import json
 from urllib.request import urlopen, Request
@@ -16,11 +21,8 @@ class RESTConnector:
     def set_header(self, key: str, value: str) -> None:
         self.headers[key] = value
 
-    def _request(self, url: str, method: str = "GET", body: Optional[Dict[str, Any]] = None) -> Any:
-        data = None
-        if body is not None:
-            data = json.dumps(body).encode("utf-8")
-        req = Request(url, data=data, method=method, headers=self.headers)
+    def _request(self, url: str) -> Any:
+        req = Request(url, method="GET", headers=self.headers)
         try:
             with urlopen(req, timeout=self.timeout) as response:
                 content = response.read().decode("utf-8")
@@ -61,21 +63,6 @@ class RESTConnector:
         records = list(self.read(endpoint, params=params))
         logger.info("REST records loaded", count=len(records), endpoint=endpoint)
         return records
-
-    def post(self, endpoint: str, body: Dict[str, Any]) -> Any:
-        result = self._request(endpoint, method="POST", body=body)
-        logger.info("REST POST complete", endpoint=endpoint)
-        return result
-
-    def put(self, endpoint: str, body: Dict[str, Any]) -> Any:
-        result = self._request(endpoint, method="PUT", body=body)
-        logger.info("REST PUT complete", endpoint=endpoint)
-        return result
-
-    def delete(self, endpoint: str) -> Any:
-        result = self._request(endpoint, method="DELETE")
-        logger.info("REST DELETE complete", endpoint=endpoint)
-        return result
 
     def validate(self, endpoint: str, required_fields: Optional[List[str]] = None) -> Dict[str, Any]:
         records = self.read_all(endpoint)

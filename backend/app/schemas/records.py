@@ -46,10 +46,11 @@ class SourceCreate(BaseModel):
 
 
 class Source(BaseModel):
+    """Source as returned by the API. connection_string is NEVER exposed:
+    it may contain credentials and is only ever accepted on input."""
     id: int
     name: str
     source_type: SourceType
-    connection_string: Optional[str] = None
     config: Optional[Dict[str, Any]] = None
     is_active: bool = True
     created_at: Optional[datetime] = None
