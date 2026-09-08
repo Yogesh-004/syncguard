@@ -1,142 +1,73 @@
-# SyncGuard — Your systems disagree. SyncGuard tells you why.
+# SyncGuard — a safety layer for cross-system record reconciliation
 
-**Cross-system data reconciliation and integration reliability platform.**
+**SyncGuard turns uncertain matching into explainable, reviewable, and verified data changes.**
 
-> Detect data conflicts, schema changes, and sync failures across disconnected business systems — with explainable matching and auditable resolution.
+> Match → evidence → contradiction-aware decision → human review → dry-run → approved PostgreSQL synchronization → verification → audit. Presence observations (`BOTH_PRESENT` / `ONLY_IN_A` / `ONLY_IN_B` / `UNKNOWN`) stay orthogonal to identity — absence is never a lifecycle claim.
 
-[![Tests](https://img.shields.io/badge/tests-26%20passed-brightgreen)](#testing) [![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688)](#) [![React](https://img.shields.io/badge/React-Vite-61DAFB)](#)
+## 1. Product
 
-Live demo (static, no backend needed) + Live Analysis (async jobs) — see [Deployment](#deployment).
+Small-team data stacks reconciling customer records across two systems: upload both extracts, review likely matches with field-level evidence, resolve conflicts, dry-run the exact mutation, confirm the write to a controlled PostgreSQL target, and prove verification + audit lineage.
 
----
+CORE: reconciliation, ML matching, evidence, conflict review, presence observations, human resolution, dry-run, controlled PostgreSQL sync, verification, audit.
+SUPPORTING: schema drift, CSV/JSON/REST ingest.
+NOT PRODUCTIZED: REST writes, golden records, lifecycle semantics, enterprise MDM/RBAC, generic observability, arbitrary SQL sync.
 
-## 1. Product Overview
+## 2. Core workflow
 
-SyncGuard ingests CSV/JSON/REST, normalizes deterministically, matches entities with explainable weighted scoring, detects conflicts, tracks schema drift, and provides reliable sync with retries/idempotency — all async via Celery+Redis and audited.
+Sources → normalization → candidate blocking → ML matching → evidence → contradiction-aware decision → human review → dry-run → approved sync → verification → audit.
 
-## 2. Problem
+## 3. Synchronization safety
 
-Same customer exists differently in CRM/ERP/Accounting (e.g., `Ravi Kumar` vs `RAVI KUMAR` vs `Ravi K.`, phone `+91 9876543210` vs `9876543210` vs `NULL`, schema `amount` → `transaction_amount`). Leads to duplicates, bad reporting, failed integrations, manual reconciliation.
+Explicit approval, dry-run before push, version-guarded transactional writes, stale rejection, target-side idempotency with collision protection, concurrency claim guards, read-back verification, verify-before-retry unknown-outcome handling, full audit lineage. See `docs/phase6b-controlled-postgresql-connector.md` and `docs/phase6c-transient-failure-hardening.md`.
 
-## 3. Why It Matters
+## 4. Validation (honest)
 
-Inconsistent data causes revenue leakage, compliance risk, and ops toil. SyncGuard makes failures visible, explainable, and safely resolvable without silently overwriting.
+- Real public NC voter-registration data; temporal validation across two snapshots: MATCH recall 0.9947, zero incorrect automatic merges in tested datasets.
+- Weak voter-ID labels used throughout — a stated limitation, never ground truth.
+- Email/phone contradiction paths are synthetic-only (fields absent from the public data).
+- 50K-scale not validated; pairwise cost guarded by `MAX_JOB_RECORDS=2000`.
+- Never "accuracy": validated recall and zero incorrect automatic merges in the tested datasets.
 
-## 4. Product Demo
+## 5. Model provenance
 
-- Explore Demo: static `frontend/public/demo.json` renders immediately (cold-start safe).
-- Run Live Analysis: upload ≤5MB/10k CSV/JSON → 202 `{job_id}` → poll `GET /jobs/{id}` with staged loader.
+LogisticRegression matcher (`backend/app/models/febrl3_ml.pkl`, v1.0.0) trained on FEBRL3 links plus DeepMatcher-packaged Walmart-Amazon product records — product data contributed to training, so person-record behavior rests on the voter validation above, not on training-domain claims. Thresholds: MATCH 0.6, POSSIBLE 0.5 (frozen; never tuned on validation labels).
 
-## 5. Architecture
+## 6. Security
 
-```
-React (Vite, Recharts) static demo fallback
-  → FastAPI thin routes → Services (normalization/matching/reconciliation/schema/sync/audit)
-  → SQLAlchemy (Postgres/SQLite fallback) + Celery (Redis)
-  → Workers with exponential backoff + DB UNIQUE idempotency
-```
-See `docs/architecture.md`.
+Application-level API key (`API_KEY` env → `X-API-Key` header; unset means development-open, logged at startup). Production refuses placeholder `SECRET_KEY`. Source `connection_string` accepted on input, never returned by the API or logs. Parameterized SQL only; no secrets in audit metadata. This is application auth, not enterprise identity/RBAC.
 
-## 6. Core Features
-
-Ingestion (extensible BaseConnector), deterministic normalization, 4-stage matching, configurable weighted scoring, conflict detection, resolution (approve/reject/modify/defer + audit), schema drift, sync jobs with retries/idempotency, async jobs, dashboard.
-
-## 7. Technology Stack
-
-Python 3.12+, FastAPI, Pydantic, SQLAlchemy 2.0, PostgreSQL 16 (SQLite fallback local), Alembic, Pandas, RapidFuzz, Celery+Redis, HTTPX, React+Vite+Recharts, Docker.
-
-## 8. Matching Methodology
-
-Exact identifiers → normalized comparison → fuzzy (RapidFuzz ratio, threshold 85) → weighted score `Σ(score*weight)/Σweights` (default name 0.4, email 0.3, phone 0.3). Every match stores `evidence` + `matched_fields`. Thresholds configurable ( >95 HIGH auto-resolve candidate, 80–95 MEDIUM recommend, <80 LOW manual).
-
-## 9. Reconciliation Methodology
-
-For each matched pair, diff fields (mismatch/missing/type), persist `conflicts.conflicting_fields` JSON, assess risk, flag `auto_resolvable`. See `docs/reconciliation.md`.
-
-## 10. Schema Drift Detection
-
-Hashes schema fields, compares to previous version, reports added/removed/renamed (fuzzy on column names, confidence) + type changes, `requires_approval`. See `docs/schema-drift.md`.
-
-## 11. Failure Recovery
-
-Statuses `queued→processing→completed|failed|cancelled`, bounded retries (5) with `2^n + jitter` backoff, persisted in `attempts`/`sync_attempts`, idempotency via DB `UNIQUE(idempotency_key)`, never loses failed jobs. See `docs/failure-recovery.md`.
-
-## 12. Security
-
-Synthetic data only, 5MB/mime/traversal validation, CORS allowlist, rate limits, never commit secrets (.env.example), secure headers, `SECURITY.md`.
-
-## 13. Testing
-
-`pytest` 26 tests: normalization, matching, reconciliation, schema + integration (health/docs). Run `python -m pytest -v`. E2E: upload→reconciliation→conflict→resolve.
-
-## 14. Benchmark Results
-
-Use `scripts/generate_data.py` + `benchmarks/` — synthetic CRM/ERP/Accounting with seeded corruption (typos, missing, conflicting amounts). Measure precision/recall/F1, records/sec, sync recovery. Report only measured numbers (no fabrication).
-
-## 15. Local Setup
+## 7. Setup
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv && source .venv/bin/activate  # runtime verified on Python 3.9
 pip install -r backend/requirements.txt
-cp .env.example .env  # set DATABASE_URL, REDIS_URL
+cp .env.example .env  # set DATABASE_URL, SECRET_KEY, API_KEY
 alembic upgrade head
 uvicorn backend.app.main:app --reload
-cd frontend && npm install && npm run dev  # http://localhost:3000 → proxies /api to :8000
+cd frontend && npm install && npm run dev
 ```
 
-## 16. Docker Setup
+Controlled PG write target (local disposable Postgres, see Phase 6B report):
+`SYNCGUARD_PG_TARGET=postgresql://USER@HOST:PORT/syncguard_target`.
 
-```bash
-docker compose up  # backend:8000, postgres:5432, redis:6379, worker, frontend:3000
-# health: http://localhost:8000/health  docs: /docs  demo: /demo.json
-```
+## 8. Testing
 
-Production Dockerfile: `python:3.12-slim`, non-root, layer cache, HEALTHCHECK, no secrets.
+`python -m pytest backend/tests/ -q` (360 tests: matching, decisions, conflicts, presence, sync, PG connector, unknown-outcome, security). Frontend: `cd frontend && npm run build`. Live E2E: upload → reconciliation → conflict → resolve → dry-run → push → verify.
 
-## 17. API Documentation
+## 9. API
 
-OpenAPI at `/docs` and `/redoc`. Key endpoints:
+OpenAPI at `/docs`. Key endpoints: `POST /sources` (+ list/get/delete), `POST /uploads`, `POST /reconciliation`, `GET /conflicts`, `GET /conflicts/{id}` (+ resolve/reject/resolutions/audit), `GET /matches`, `POST /resolutions/{id}/dry-run|push`, `GET /sync-jobs/{id}` (+ `review` outcome block), `POST /sync-jobs/{id}/retry`, presence endpoints, `/health`, `/readyz`. Legacy `/match`, `/matching/run`, `/reconcile` are superseded (kept, not product surface).
 
-```
-GET  /health
-POST /sources  GET /sources  GET /sources/{id}  DELETE /sources/{id}
-POST /uploads  GET /uploads/{id}
-POST /reconciliation  GET /reconciliation/{id}  (202 Accepted)
-GET  /conflicts  GET /conflicts/{id}  POST /conflicts/{id}/resolve
-GET  /schemas  GET /schemas/{id}  GET /schemas/drift
-GET  /jobs  GET /jobs/{id}
-GET  /audit-logs
-```
-Idempotency via `Idempotency-Key` header → DB UNIQUE. Pagination `?page=&limit=`. See `docs/api.md`.
+## 10. Deployment
 
-## 18. Deployment
+Local-first. `docker compose up` provides backend/Postgres/Redis/worker (compose status: shipped, verify before relying — see Phase 7 report). No public deployment yet: complete authentication, secrets, and hardening review first.
 
-- Frontend static: Cloudflare Pages / Vercel — `npm run build` → `dist/`, `VITE_API_URL` env.
-- Backend: Render (Docker, env vars, HTTPS, health check), portable to ECS/ACI/Cloud Run.
-- DB: Supabase managed Postgres; local sqlite fallback when postgres down.
+## 11. Limitations
 
-## 19. Limitations
+Single-tenant app-level auth only; no RBAC/SSO; no golden records; no lifecycle/deletion semantics; no bidirectional write-back or CDC; REST writes not productized; Celery presence unwired; single-county validation samples; unknown wall-clock network partitions covered by fault-injection-equivalent paths only.
 
-- Single-tenant, no RBAC/JWT yet (audit logs anon `resolved_by` string).
-- No bidirectional write-back, no real-time CDC, no distributed matching (>100k needs blocking/indexing).
-- ML matching deferred — deterministic baseline first.
+## 12. Docs
 
-## 20. Future Improvements
-
-Blocking keys, PgBouncer, read replicas, S3 uploads, Spark matching, Prometheus/Grafana, JWT+RBAC, ML comparison vs baseline.
-
-## 21. Screenshots
-
-Landing hero + Dashboard health + Conflict side-by-side + Jobs polling — see `frontend/src/pages/`.
-
-## 22. Live Demo
-
-Static landing renders without backend. Live Analysis uploads synthetic data, polls job, displays explainable evidence. Warning: do not upload confidential production data to public demo.
-
----
-
-## Additional Docs
-
-`docs/PRD.md` (13-part plan), `docs/architecture.md`, `docs/database.md`, `docs/api.md`, `docs/matching-engine.md`, `docs/reconciliation.md`, `docs/schema-drift.md`, `docs/failure-recovery.md`, `docs/security.md`, `docs/deployment.md`.
+Phase reports under `docs/`: product discovery/validation audits, real-data + temporal validation, 5A schema fix, 5B appearance/disappearance, 5C presence (design/implementation/wiring), 5D reviewer surfacing, 6A integration boundary, 6B PostgreSQL connector, 6C transient hardening, 6D outcome surfacing, release audit, and this phase's hardening report.
 
 License: MIT. See `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md`.
