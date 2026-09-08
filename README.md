@@ -56,6 +56,12 @@ Development needs no VITE_API_URL (Vite proxies `/api` → localhost:8000).
 Controlled PG write target (local disposable Postgres, see Phase 6B report):
 `SYNCGUARD_PG_TARGET=postgresql://USER@HOST:PORT/syncguard_target`.
 
+Production database: any standard managed PostgreSQL works through `DATABASE_URL`
+(Supabase PostgreSQL is a compatible target: no extensions, no SDK, no special
+pooling required — plain SQLAlchemy/psycopg2 with `pool_pre_ping`; append
+`?sslmode=require` to the DSN when the provider mandates TLS). No Redis/Celery
+required for the core product.
+
 ## 8. Testing
 
 `python -m pytest backend/tests/ -q` (360 tests: matching, decisions, conflicts, presence, sync, PG connector, unknown-outcome, security). Frontend: `cd frontend && npm run build`. Live E2E: upload → reconciliation → conflict → resolve → dry-run → push → verify.
