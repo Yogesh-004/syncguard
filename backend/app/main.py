@@ -39,9 +39,15 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-origins = [o.strip() for o in settings.CORS_ORIGINS.split(",")] if hasattr(settings, "CORS_ORIGINS") else ["*"]
-if not origins or origins == [""]:
-    origins = ["*"]
+def cors_origins(raw: object) -> list:
+    """Parse CORS_ORIGINS identically for app wiring and tests."""
+    origins = [o.strip() for o in str(raw or "").split(",")] if raw is not None else ["*"]
+    if not origins or origins == [""]:
+        origins = ["*"]
+    return origins
+
+
+origins = cors_origins(getattr(settings, "CORS_ORIGINS", "*"))
 
 app.add_middleware(
     CORSMiddleware,
@@ -119,4 +125,4 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=settings.PORT)

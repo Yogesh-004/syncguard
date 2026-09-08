@@ -28,19 +28,27 @@ def _cols(table: str = "sync_jobs"):
     return table, cols
 
 
+def _existing_columns(table: str) -> set:
+    try:
+        return {c["name"] for c in sa.inspect(op.get_bind()).get_columns(table)}
+    except Exception:
+        return set()
+
+
 def upgrade() -> None:
+    # Check-then-add (not try/except): on PostgreSQL a failed DDL statement
+    # aborts the whole revision transaction, which broke fresh-database
+    # upgrades (Phase 8B finding). Safe to re-run after create_all.
     table, cols = _cols()
+    existing = _existing_columns(table)
     for name, typ in cols:
-        try:
+        if name not in existing:
             op.add_column(table, sa.Column(name, typ, nullable=True))
-        except Exception:
-            pass  # column already exists (e.g. create_all ran first)
 
 
 def downgrade() -> None:
     table, cols = _cols()
+    existing = _existing_columns(table)
     for name, _ in cols:
-        try:
+        if name in existing:
             op.drop_column(table, name)
-        except Exception:
-            pass

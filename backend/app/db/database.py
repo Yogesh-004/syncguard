@@ -30,7 +30,13 @@ def init_db():
         logger.info("Database initialized", db_url=db_url)
         return
     except Exception as e:
-        logger.error("Postgres init failed, falling back to sqlite", error=str(e))
+        logger.error("Postgres init failed", error=str(e))
+        from backend.app.core.config import settings as _settings
+        if str(getattr(_settings, "ENV", "development") or "").lower() == "production":
+            raise RuntimeError(
+                "Production requires PostgreSQL: DATABASE_URL unreachable and "
+                "SQLite fallback is disabled in production. Refusing to boot "
+                "ephemeral.") from e
         fallback_url = "sqlite:///./test_local.db"
         connect_args2 = {"check_same_thread": False}
         engine = create_engine(fallback_url, pool_pre_ping=True, connect_args=connect_args2)

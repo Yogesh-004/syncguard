@@ -1,0 +1,26 @@
+# Phase 8B: keep the image lean and secret-free. Runtime model artifacts
+# under backend/app/models/ are intentionally NOT excluded.
+docs/
+benchmarks/
+data/
+scripts/
+frontend/node_modules/
+frontend/dist/
+backend/tests/
+**/__pycache__/
+*.pyc
+*.pyo
+*.db
+*.log*
+.git/
+.pytest_cache/
+.coverage
+htmlcov/
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store

@@ -42,10 +42,16 @@ Application-level API key (`API_KEY` env → `X-API-Key` header; unset means dev
 python -m venv .venv && source .venv/bin/activate  # runtime verified on Python 3.9
 pip install -r backend/requirements.txt
 cp .env.example .env  # set DATABASE_URL, SECRET_KEY, API_KEY
-alembic upgrade head
-uvicorn backend.app.main:app --reload
+alembic upgrade head  # deploy step: migrations, then boot (boot also self-creates tables)
+uvicorn backend.app.main:app --reload --port 8000  # production honors $PORT (default 8000)
 cd frontend && npm install && npm run dev
 ```
+
+Production frontend build (backend URL baked at build time):
+```bash
+cd frontend && VITE_API_URL=https://<backend-host> npm run build  # serve dist/ statically
+```
+Development needs no VITE_API_URL (Vite proxies `/api` → localhost:8000).
 
 Controlled PG write target (local disposable Postgres, see Phase 6B report):
 `SYNCGUARD_PG_TARGET=postgresql://USER@HOST:PORT/syncguard_target`.
@@ -60,7 +66,7 @@ OpenAPI at `/docs`. Key endpoints: `POST /sources` (+ list/get/delete), `POST /u
 
 ## 10. Deployment
 
-Local-first. `docker compose up` provides backend/Postgres/Redis/worker (compose status: shipped, verify before relying — see Phase 7 report). No public deployment yet: complete authentication, secrets, and hardening review first.
+Local-first. `docker compose up` provides backend/Postgres/Redis/worker for local validation (compose app image not yet built in CI; Postgres service verified). No Redis/worker required for the core product (inline path). ENV=production requires PostgreSQL — SQLite fallback is refused at boot — plus SECRET_KEY and API_KEY. No public deployment yet; Railway not deployed.
 
 ## 11. Limitations
 
