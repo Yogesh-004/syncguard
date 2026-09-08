@@ -62,7 +62,10 @@ def reconcile_task(self, job_id: int, source_id: str, records: list):
 
 
 @celery_app.task(bind=True, max_retries=5, acks_late=True)
-def match_task(self, source_a_id: str, source_b_id: str, threshold: float = 0.7):
+def match_task(self, source_a_id: str, source_b_id: str, threshold=None):
+    from backend.app.core.config import settings as _settings
+    if threshold is None:
+        threshold = _settings.MATCH_THRESHOLD
     try:
         self.update_state(state="PROGRESS", meta={"progress": 10, "status": "Loading records"})
         engine = MatchingEngine()

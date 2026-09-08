@@ -6,7 +6,7 @@ from backend.app.core.config import settings
 from backend.app.core.logging import logger
 
 db_url = settings.DATABASE_URL
-connect_args = {"check_same_thread": False} if db_url.startswith("sqlite") else {}
+connect_args = {"check_same_thread": False, "timeout": 30} if db_url.startswith("sqlite") else {}
 engine = create_engine(db_url, pool_pre_ping=True, echo=settings.DEBUG, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

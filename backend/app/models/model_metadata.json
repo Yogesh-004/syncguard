@@ -1,0 +1,29 @@
+{
+  "model_id": "syncguard_matcher",
+  "model_version": "1.0.0",
+  "algorithm": "LogisticRegression(max_iter=300)",
+  "training_dataset": "febrl3-5k(6538 links)+walmart_amazon-10k+walmart_amazon-11k-via-DeepMatcher-official-zips",
+  "feature_version": "1.0",
+  "preprocessing_version": "1.0",
+  "created_at": "2026-09-06T00:00:00+00:00",
+  "artifact_path": "backend/app/models/febrl3_ml.pkl",
+  "artifact_hash": "080455c6260f05a5",
+  "status": "active",
+  "metrics": {
+    "febrl3_full_blocked": {
+      "precision": 1.0,
+      "recall": 0.7605,
+      "f1": 0.8639
+    },
+    "walmart_amazon_test": {
+      "precision": 0.8696,
+      "recall": 0.5181,
+      "f1": 0.6494
+    },
+    "amazon_google_test": {
+      "precision": 0.6237,
+      "recall": 0.2479,
+      "f1": 0.3547
+    }
+  }
+}

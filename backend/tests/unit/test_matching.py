@@ -19,7 +19,7 @@ class TestMatchingEngine:
         record_a = {"name": "John Doe", "email": "john@example.com", "phone": "5551234567"}
         record_b = {"name": "John Doe", "email": "john@example.com", "phone": "5551234567"}
         confidence, matched_fields, evidence = engine.compute_score(record_a, record_b)
-        assert confidence == 1.0
+        assert confidence >= 0.99
         assert len(matched_fields) == 3
 
     def test_fuzzy_match(self):

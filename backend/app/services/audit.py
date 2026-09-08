@@ -33,9 +33,10 @@ class AuditService:
         if len(self._buffer) >= self._max_buffer:
             self.flush(db=db)
 
-    def flush(self, db: Optional[SessionLocal] = None) -> int:
+    def flush(self, db: Optional[SessionLocal] = None, close: bool = True) -> int:
         if not self._buffer:
             return 0
+        own_session = db is None
         if db is None:
             db = SessionLocal()
         try:
@@ -53,7 +54,7 @@ class AuditService:
             self._buffer.clear()
             return 0
         finally:
-            if db:
+            if db and (close or own_session):
                 db.close()
 
     def get_logs(self, request_id: Optional[str] = None, job_id: Optional[int] = None,

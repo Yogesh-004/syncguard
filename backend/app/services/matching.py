@@ -1,55 +1,24 @@
-"""Matching and entity resolution service — now ML-driven with trained production models."""
+"""Matching and entity resolution service — ML inference via ModelService (Phase 1)."""
 from typing import Any, Dict, List, Optional, Tuple
-from pathlib import Path
-import pickle
 from rapidfuzz import fuzz
 from backend.app.core.logging import logger
 from backend.app.schemas.matching import MatchResult, MatchingRule, EntityGroup
+from backend.app.services import model_service as _ms
 
-
-def _load_ml_model(name="febrl3_ml.pkl"):
-    p = Path(__file__).resolve().parents[1] / "models" / name
-    if p.exists():
-        try:
-            with open(p, "rb") as f:
-                return pickle.load(f)
-        except Exception as e:
-            logger.error("Failed to load ML model", error=str(e))
-    return None
-
-_ML_MODEL = _load_ml_model()
-_ML_META = None
-try:
-    import json
-    meta_p = Path(__file__).resolve().parents[1] / "models" / "febrl3_meta.json"
-    if meta_p.exists():
-        _ML_META = json.loads(meta_p.read_text())
-except: pass
-
-def _featurize(a: dict, b: dict):
-    name_a = str(a.get("name") or a.get("given_name") or "")
-    name_b = str(b.get("name") or b.get("given_name") or "")
-    name_sim = fuzz.ratio(name_a, name_b) / 100 if name_a and name_b else 0
-    pc_a = str(a.get("postcode") or a.get("metadata",{}).get("postcode") or a.get("address",{}).get("postcode") if isinstance(a.get("address"), dict) else "" or "")
-    pc_b = str(b.get("postcode") or b.get("metadata",{}).get("postcode") or b.get("address",{}).get("postcode") if isinstance(b.get("address"), dict) else "" or "")
-    pc_exact = 1.0 if pc_a and pc_a == pc_b else 0.0
-    ext_a = str(a.get("external_id") or a.get("soc_sec_id") or a.get("phone") or "")
-    ext_b = str(b.get("external_id") or b.get("soc_sec_id") or b.get("phone") or "")
-    ext_exact = 1.0 if ext_a and ext_a == ext_b else 0.0
-    suburb_a = str(a.get("address",{}).get("city") or a.get("metadata",{}).get("suburb") or "" if isinstance(a.get("address"), dict) else a.get("suburb") or "")
-    suburb_b = str(b.get("address",{}).get("city") or b.get("metadata",{}).get("suburb") or "" if isinstance(b.get("address"), dict) else b.get("suburb") or "")
-    suburb_sim = fuzz.ratio(suburb_a, suburb_b) / 100 if suburb_a and suburb_b else 0
-    dob_a = str(a.get("date_of_birth") or "")
-    dob_b = str(b.get("date_of_birth") or "")
-    dob_exact = 1.0 if dob_a and dob_a == dob_b else 0.0
-    token_overlap = len(set(name_a.lower().split()) & set(name_b.lower().split())) / max(1, len(set(name_a.lower().split()) | set(name_b.lower().split())))
-    len_diff = abs(len(name_a) - len(name_b)) / max(1, max(len(name_a), len(name_b)))
-    return [name_sim, pc_exact, ext_exact, suburb_sim, dob_exact, token_overlap, len_diff]
 
 class MatchingEngine:
-    def __init__(self, rules: Optional[List[Dict[str, Any]]] = None, use_ml: bool = True):
-        self.use_ml = use_ml and _ML_MODEL is not None
-        self.ml_model = _ML_MODEL if self.use_ml else None
+    def __init__(self, rules: Optional[List[Dict[str, Any]]] = None, use_ml: bool = True, strict_ml: bool = False):
+        self.strict_ml = strict_ml
+        self.use_ml = use_ml
+        self.ml_model = None
+        if use_ml:
+            try:
+                self.ml_model = _ms.load_model()
+            except Exception as e:
+                if strict_ml:
+                    raise
+                logger.error("ML model unavailable, rule fallback", error=str(e))
+                self.use_ml = False
         self.rules: List[MatchingRule] = []
         if rules:
             for r in rules:
@@ -121,11 +90,14 @@ class MatchingEngine:
     def compute_score(self, record_a: Dict[str, Any], record_b: Dict[str, Any]) -> Tuple[float, List[str], Dict[str, Any]]:
         if self.use_ml and self.ml_model is not None:
             try:
-                feats = _featurize(record_a, record_b)
+                from backend.app.core.config import settings as _settings
+                from backend.app.services import decision_engine as _de
+                feats = _ms.featurize(record_a, record_b)
                 prob = float(self.ml_model.predict_proba([feats])[0][1])
-                # also compute rule evidence for explainability
+                verdict = _de.decide_pair(record_a, record_b, prob, _settings.MATCH_THRESHOLD, _settings.POSSIBLE_MATCH_THRESHOLD)
+                # rule ticks kept for UI explainability (do NOT drive the decision)
                 matched_fields = []
-                evidence = {}
+                evidence: Dict[str, Any] = {}
                 for rule in self.rules:
                     val_a = record_a.get(rule.field_name)
                     val_b = record_b.get(rule.field_name)
@@ -138,11 +110,24 @@ class MatchingEngine:
                     evidence[rule.field_name] = {"match": matched, "score": score, "method": method, "val_a": str(val_a), "val_b": str(val_b)}
                     if matched:
                         matched_fields.append(rule.field_name)
-                # add ML fields
-                evidence["ml_prob"] = prob
-                evidence["ml_features"] = {"name_sim": feats[0], "pc_exact": feats[1], "ext_exact": feats[2], "suburb_sim": feats[3], "dob_exact": feats[4], "token_overlap": feats[5], "len_diff": feats[6]}
-                evidence["model"] = "LogisticRegression (trained on FEBRL3 + product datasets)"
-                return prob, matched_fields, evidence
+                evidence.update({
+                    "decision": verdict["decision"],
+                    "model_score": verdict["model_score"],
+                    "match_score": verdict["model_score"],
+                    "ml_prob": verdict["model_score"],
+                    "model_version": _ms.get_model_version(),
+                    "field_scores": verdict["field_scores"],
+                    "field_evidence": verdict["field_evidence"],
+                    "penalties": verdict["penalties"],
+                    "risk": verdict["risk"],
+                    "risk_reason": verdict["risk_reason"],
+                    "auto_resolvable": verdict["auto_resolvable"],
+                    "recommendation": verdict["recommendation"],
+                    "verification_status": verdict["verification_status"],
+                    "ml_features": {"name_sim": feats[0], "pc_exact": feats[1], "ext_exact": feats[2], "suburb_sim": feats[3], "dob_exact": feats[4], "token_overlap": feats[5], "len_diff": feats[6]},
+                    "model": "LogisticRegression (trained on FEBRL3 + product datasets)",
+                })
+                return verdict["final_confidence"], matched_fields, evidence
             except Exception as e:
                 logger.error("ML predict failed, fallback to rule", error=str(e))
         matched_fields = []
@@ -168,7 +153,22 @@ class MatchingEngine:
         confidence = weighted_score / total_weight if total_weight > 0 else 0.0
         return confidence, matched_fields, evidence
 
-    def find_matches(self, records: List[Dict[str, Any]], threshold: float = 0.6) -> List[MatchResult]:
+    def _build_result(self, record_a: Dict[str, Any], record_b: Dict[str, Any], i: int, j: int,
+                      confidence: float, matched_fields: List[str], evidence: Dict[str, Any]) -> MatchResult:
+        return MatchResult(
+            record_a_id=record_a.get("id", i),
+            record_b_id=record_b.get("id", j),
+            confidence=round(confidence, 4),
+            match_method="ml" if self.use_ml else ("fuzzy" if confidence < 1.0 else "exact"),
+            matched_fields=matched_fields,
+            evidence=evidence,
+            is_resolved=False,
+        )
+
+    def find_matches(self, records: List[Dict[str, Any]], threshold: Optional[float] = None) -> List[MatchResult]:
+        if threshold is None:
+            from backend.app.core.config import settings as _settings
+            threshold = _settings.POSSIBLE_MATCH_THRESHOLD
         results = []
         for i in range(len(records)):
             for j in range(i + 1, len(records)):
@@ -176,20 +176,52 @@ class MatchingEngine:
                 record_b = records[j]
                 confidence, matched_fields, evidence = self.compute_score(record_a, record_b)
                 if confidence >= threshold:
-                    result = MatchResult(
-                        record_a_id=record_a.get("id", i),
-                        record_b_id=record_b.get("id", j),
-                        confidence=round(confidence, 4),
-                        match_method="ml" if self.use_ml else ("fuzzy" if confidence < 1.0 else "exact"),
-                        matched_fields=matched_fields,
-                        evidence=evidence,
-                        is_resolved=False,
-                    )
-                    results.append(result)
+                    results.append(self._build_result(record_a, record_b, i, j, confidence, matched_fields, evidence))
         logger.info("Found matches", count=len(results), threshold=threshold, model="ml" if self.use_ml else "rule")
         return results
 
-    def find_entity_groups(self, records: List[Dict[str, Any]], threshold: float = 0.6) -> List[EntityGroup]:
+    def evaluate_pairs(self, records: List[Dict[str, Any]], nomatch_sample: int = 0,
+                         candidates: Optional[set] = None,
+                         provenance: Optional[Dict[tuple, List[str]]] = None) -> Dict[str, Any]:
+        """Evaluate candidate pairs, returning kept matches + nearest-miss NO_MATCH sample.
+
+        `candidates` is a set of (i, j) index pairs (from blocking); None means
+        exhaustive all-pairs (only safe for small inputs — caller decides).
+        `provenance` maps pair -> blocking passes that produced it; attached to
+        evidence as blocking_reasons (candidate provenance, NOT match evidence).
+        NO_MATCH pairs below the possible threshold are normally discarded; the top
+        `nomatch_sample` by score are returned labeled NO_MATCH (sampled:true) so the
+        review queue can display the tier without persisting millions of rows."""
+        from backend.app.core.config import settings as _settings
+        if candidates is None:
+            n = len(records)
+            candidates = {(i, j) for i in range(n) for j in range(i + 1, n)}
+        provenance = provenance or {}
+        kept: List[MatchResult] = []
+        misses: List[tuple] = []
+        evaluated = 0
+        for i, j in sorted(candidates):
+            evaluated += 1
+            record_a, record_b = records[i], records[j]
+            confidence, matched_fields, evidence = self.compute_score(record_a, record_b)
+            evidence["blocking_reasons"] = provenance.get((i, j), ["exhaustive"])
+            if confidence >= _settings.POSSIBLE_MATCH_THRESHOLD:
+                kept.append(self._build_result(record_a, record_b, i, j, confidence, matched_fields, evidence))
+            elif nomatch_sample > 0:
+                misses.append((confidence, i, j, matched_fields, evidence))
+        misses.sort(key=lambda t: t[0], reverse=True)
+        sample = []
+        for confidence, i, j, matched_fields, evidence in misses[:nomatch_sample]:
+            ev = dict(evidence or {})
+            ev["sampled"] = True
+            sample.append(self._build_result(records[i], records[j], i, j, confidence, matched_fields, ev))
+        logger.info("Pairs evaluated", evaluated=evaluated, kept=len(kept), nomatch_sample=len(sample))
+        return {"evaluated_pairs": evaluated, "kept": kept, "nomatch_sample": sample}
+
+    def find_entity_groups(self, records: List[Dict[str, Any]], threshold: Optional[float] = None) -> List[EntityGroup]:
+        if threshold is None:
+            from backend.app.core.config import settings as _settings
+            threshold = _settings.MATCH_THRESHOLD
         matches = self.find_matches(records, threshold)
         parent: Dict[int, int] = {}
         def find(x: int) -> int:

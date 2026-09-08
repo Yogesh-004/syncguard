@@ -68,6 +68,11 @@ class MatchModel(Base):
     matched_fields = Column(JSON, nullable=False, default=[])
     evidence = Column(JSON, nullable=False, default={})
     is_resolved = Column(Boolean, default=False)
+    # Phase 4.5 decision columns (nullable: historical rows predate them)
+    final_confidence = Column(Float, nullable=True)
+    risk = Column(String(20), nullable=True)
+    auto_resolvable = Column(Boolean, nullable=True)
+    recommendation = Column(String(50), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     record_a = relationship("RecordModel", foreign_keys=[record_a_id], back_populates="matches")
@@ -142,11 +147,18 @@ class SyncJobModel(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     reconciliation_job_id = Column(Integer, ForeignKey("reconciliation_jobs.id"), nullable=True)
+    resolution_id = Column(Integer, ForeignKey("resolution_logs.id"), nullable=True)
     source_id = Column(String(100), nullable=False)
     target_source_id = Column(String(100), nullable=True)
+    destination = Column(String(200), nullable=True)
+    operation = Column(String(50), nullable=True)
+    field_name = Column(String(100), nullable=True)
+    resolved_value = Column(JSON, nullable=True)
     status = Column(String(20), default="pending")
     progress = Column(Float, default=0.0)
+    attempt_count = Column(Integer, default=0)
     error_message = Column(Text, nullable=True)
+    response_metadata = Column(JSON, nullable=True)
     idempotency_key = Column(String(200), nullable=True, unique=True, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     started_at = Column(DateTime, nullable=True)
@@ -182,6 +194,34 @@ class SyncAttemptModel(Base):
     completed_at = Column(DateTime, nullable=True)
 
     job = relationship("SyncJobModel", back_populates="attempts")
+
+
+class PresenceObservationModel(Base):
+    """Comparison-bound presence observation (Phase 5C).
+
+    Record/entity references are internal ids only — never raw PII. No
+    directive or lifecycle columns exist by design: an observation cannot
+    express DELETE/INSERT/DELETED/NEW.
+    """
+    __tablename__ = "presence_observations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    job_id = Column(Integer, ForeignKey("reconciliation_jobs.id"), nullable=True, index=True)
+    snapshot_a_ref = Column(String(200), nullable=True)
+    snapshot_b_ref = Column(String(200), nullable=True)
+    scope = Column(JSON, nullable=False, default={})
+    record_ref = Column(String(200), nullable=False, index=True)
+    record_presence = Column(String(20), nullable=False)
+    entity_presence = Column(String(20), nullable=True)
+    basis = Column(String(40), nullable=False)
+    entity_links = Column(JSON, nullable=True)
+    observed_at = Column(DateTime, default=datetime.utcnow)
+    pipeline_version = Column(String(20), nullable=True)
+
+    __table_args__ = (
+        Index("idx_presence_job", "job_id"),
+        Index("idx_presence_record", "record_ref"),
+    )
 
 
 class AuditLogModel(Base):

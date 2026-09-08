@@ -14,7 +14,19 @@ def normalize_name(value: str) -> str:
     return normalized
 
 
-def normalize_phone(value: str) -> str:
+def normalize_phone(value: str, default_region: Optional[str] = None) -> str:
+    """Normalize to E.164-ish digits. 10-digit numbers get the configured default
+    region prefix (US=+1, IN=+91); explicit country codes are preserved.
+    Documented US-default limitation: set PHONE_DEFAULT_REGION (US|IN) or pass
+    default_region explicitly. Cross-region pairs without country codes WILL
+    differ — see docs/conflict-rules.md."""
+    if default_region is None:
+        try:
+            from backend.app.core.config import settings as _settings
+            default_region = _settings.PHONE_DEFAULT_REGION
+        except Exception:
+            default_region = "US"
+    prefix = {"US": "1", "IN": "91"}.get(str(default_region).upper(), "1")
     if not value:
         return ""
     raw = str(value).strip()
@@ -24,7 +36,7 @@ def normalize_phone(value: str) -> str:
     if digits.startswith("00"):
         digits = digits[2:]
     if len(digits) == 10:
-        return f"+1{digits}"
+        return f"+{prefix}{digits}"
     if len(digits) == 11 and digits.startswith("1"):
         return f"+{digits}"
     if len(digits) == 12 and digits.startswith("91"):
@@ -105,7 +117,11 @@ def normalize_numeric(value: Any, decimal_places: int = 2) -> Optional[float]:
     if isinstance(value, (int, float)):
         return round(float(value), decimal_places)
     s = str(value).strip()
-    s = re.sub(r"[^\d.\-]", "", s)
+    try:
+        return round(float(s), decimal_places)
+    except (ValueError, TypeError):
+        pass
+    s = re.sub(r"[$,\s₹€£¥]", "", s)
     if not s or s in (".", "-", "-."):
         return None
     try:
@@ -134,6 +150,8 @@ def normalize_record(data: Dict[str, Any]) -> Dict[str, Any]:
             break
     for key, val in data.items():
         if key not in normalized:
+            if val is None:
+                continue
             if isinstance(val, str):
                 normalized[key] = re.sub(r"\s+", " ", val.strip())
             else:
