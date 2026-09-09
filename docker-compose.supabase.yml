@@ -1,0 +1,18 @@
+# Supabase/external-PostgreSQL validation override (Phase 8D-A).
+#
+# Usage (DATABASE_URL supplied at runtime, never committed):
+#   DATABASE_URL='postgresql://postgres:<password>@<project-ref>.supabase.co:5432/postgres?sslmode=require' \
+#     docker compose -f docker-compose.yml -f docker-compose.supabase.yml up backend
+#
+# This override detaches the backend from the local postgres service and
+# points it at the externally supplied DATABASE_URL. No application-code
+# changes; the app connects through the existing SQLAlchemy/psycopg2 path.
+# Requires SECRET_KEY and API_KEY in the environment (placeholders refused).
+
+services:
+  syncguard:
+    depends_on: !reset []
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL must be set in the environment for Supabase validation}
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY must be set in the environment}
+      API_KEY: ${API_KEY:?API_KEY must be set in the environment}

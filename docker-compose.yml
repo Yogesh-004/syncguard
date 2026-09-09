@@ -38,7 +38,9 @@ services:
       PORT: "8000"
       SECRET_KEY: "local-validation-only-not-a-secret"
       API_KEY: "local-validation-key"
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/syncguard
+      # Interpolated: override via shell env or untracked .env file.
+      # Default preserves the Phase 8C local postgres workflow.
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/syncguard}
       SYNCGUARD_PG_TARGET: postgresql://postgres:postgres@sg-sync-target:5432/syncguard_target
       DEMO_MODE: "true"
       CORS_ORIGINS: "*"

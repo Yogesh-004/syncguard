@@ -20,6 +20,21 @@ def get_db() -> Session:
         db.close()
 
 
+def _redacted_url(url: str) -> str:
+    """Strip password material for logs: postgresql://user@host/db."""
+    try:
+        from urllib.parse import urlsplit
+        parts = urlsplit(url or "")
+        if not parts.scheme or not parts.hostname:
+            return parts.scheme + "://?" if parts.scheme else "?redacted?"
+        user = parts.username or "?"
+        host = parts.hostname or "?"
+        db = (parts.path or "").lstrip("/") or "?"
+        return f"{parts.scheme}://{user}@{host}/{db}"
+    except Exception:
+        return "?redacted?"
+
+
 def init_db():
     import backend.app.db.models
     global engine, SessionLocal, db_url
@@ -27,7 +42,7 @@ def init_db():
         Base.metadata.create_all(bind=engine)
         with engine.connect() as conn:
             conn.execute(__import__("sqlalchemy").text("SELECT 1"))
-        logger.info("Database initialized", db_url=db_url)
+        logger.info("Database initialized", db_url=_redacted_url(db_url))
         return
     except Exception as e:
         logger.error("Postgres init failed", error=str(e))
@@ -43,7 +58,7 @@ def init_db():
         SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
         db_url = fallback_url
         Base.metadata.create_all(bind=engine)
-        logger.info("Database initialized (fallback sqlite)", db_url=db_url)
+        logger.info("Database initialized (fallback sqlite)", db_url=_redacted_url(db_url))
 
 
 def get_engine():
