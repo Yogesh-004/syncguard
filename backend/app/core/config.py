@@ -2,6 +2,15 @@
 import os
 from typing import Optional
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
+
+
+def normalize_database_url(url: str) -> str:
+    """Accept Heroku/Render-style postgres:// URLs (SQLAlchemy 2.0 requires
+    the postgresql:// scheme). Pure string normalization, tested directly."""
+    if url.startswith("postgres://"):
+        return "postgresql://" + url[len("postgres://"):]
+    return url
 
 
 class Settings(BaseSettings):
@@ -33,6 +42,11 @@ class Settings(BaseSettings):
     EXHAUSTIVE_PAIR_LIMIT: int = 50000
     MAX_CANDIDATES: int = 500000
     MAX_BLOCK_SIZE: int = 500
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def _normalize_database_url(cls, v: object) -> object:
+        return normalize_database_url(v) if isinstance(v, str) else v
 
     class Config:
         env_file = ".env"
