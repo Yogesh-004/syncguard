@@ -339,6 +339,7 @@ def create_reconciliation(
                 db.add(mm)
                 persisted.append(mm)
                 db.add(AuditLogModel(action="MATCH_CREATED", entity_type="match", entity_id=None,
+                                     job_id=model.id,
                                      details={"job_id": model.id, "record_a_id": a, "record_b_id": b, "decision": decision, "confidence": m.confidence}))
             # persist nearest-miss NO_MATCH sample (labeled, bounded — not hidden, not exhaustive)
             for m in nomatch:
@@ -352,10 +353,14 @@ def create_reconciliation(
                     continue
                 db.add(MatchModel(record_a_id=a, record_b_id=b, confidence=m.confidence, match_method="ml", matched_fields=m.matched_fields, evidence=ev, entity_group_id=f"job-{model.id}",
                                   final_confidence=m.confidence, risk=ev.get("risk"), auto_resolvable=False, recommendation=ev.get("recommendation")))
+                db.add(AuditLogModel(action="MATCH_CREATED", entity_type="match", entity_id=None,
+                                     job_id=model.id,
+                                     details={"job_id": model.id, "record_a_id": a, "record_b_id": b, "decision": "NO_MATCH", "confidence": m.confidence, "sampled": True}))
             db.flush()
             for mm in persisted:
                 if mm.id and (mm.evidence or {}).get("decision"):
                     db.add(AuditLogModel(action="MATCH_CLASSIFIED", entity_type="match", entity_id=str(mm.id),
+                                         job_id=model.id,
                                          details={"job_id": model.id, "decision": (mm.evidence or {}).get("decision"), "confidence": mm.confidence, "risk": mm.risk, "auto_resolvable": mm.auto_resolvable}))
             # field-level conflicts for MATCH and POSSIBLE_MATCH tiers (NO_MATCH excluded);
             # POSSIBLE pairs carry disagreements that need human review — hiding them would lose reviewability
@@ -382,6 +387,7 @@ def create_reconciliation(
             db.flush()
             for cm in db.query(ConflictModel).filter(ConflictModel.match_id.in_([mm.id for mm in persisted if mm.id])).all():
                 db.add(AuditLogModel(action="CONFLICT_CREATED", entity_type="conflict", entity_id=str(cm.id),
+                                     job_id=model.id,
                                      details={"job_id": model.id, "match_id": cm.match_id, "field": (cm.conflicting_fields or [{}])[0].get("field_name"), "risk": cm.risk_level}))
             # presence side output (Phase 5C-W): read-only derivation over the
             # comparison's record sets. Orthogonal to matching: no feedback into
