@@ -4,6 +4,7 @@ import api from '../services/api-client'
 
 export default function Landing() {
   const [live, setLive] = useState<any>({ records: 0, sources: 0, matches: 0, conflicts: 0, jobs: 0 })
+  const [liveOk, setLiveOk] = useState(false)
   const [specMatch, setSpecMatch] = useState<any>(null)
   useEffect(() => {
     Promise.allSettled([
@@ -14,6 +15,7 @@ export default function Landing() {
       api.get('/jobs'),
     ]).then(results => {
       const [rec, src, mat, conf, jobs] = results.map((r:any)=> r.status==='fulfilled' ? r.value.data : null)
+      if (results.some((r:any)=> r.status==='fulfilled')) setLiveOk(true)
       setLive({
         records: rec?.total ?? 0,
         sources: Array.isArray(src) ? src.length : 0,
@@ -30,6 +32,7 @@ export default function Landing() {
     })
   }, [])
   const d = live.records ? live : { records: 2200, sources: 4, matches: 23, conflicts: 20, jobs: 1 }
+  const foot = liveOk ? 'live DB' : 'illustrative'
 
   // Live decision-engine confidence when available (capped display: never 100% unless exact)
   const confidence = specMatch ? (Math.min(specMatch.confidence, 0.999)*100).toFixed(1) : '—'
@@ -61,12 +64,12 @@ export default function Landing() {
           ['Jobs', d.jobs, '#06b6d4'],
           ['Model', 'ML', '#22c55e'],
           ['Datasets', '3', '#f59e0b'],
-          ['Health', '94.2%', '#22c55e'],
+          ['Health', liveOk ? 'online' : '—', '#22c55e'],
         ].map(([label, val, color]: any) => (
           <div key={label} style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 16, textAlign: 'center' }}>
-            <div style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.5 }}>{label}</div>
+            <div style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: .5 }}>{label}</div>
             <div style={{ fontSize: 22, fontWeight: 800, color, marginTop: 6 }}>{val}</div>
-            <div style={{ fontSize:10, color:'#64748b', marginTop:2}}>live DB</div>
+            <div style={{ fontSize:10, color:'#64748b', marginTop:2}}>{foot}</div>
           </div>
         ))}
       </section>
@@ -75,10 +78,10 @@ export default function Landing() {
         <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 20 }}>
           <h3 style={{ fontWeight: 700 }}>How it works — trained model for every feature</h3>
           <ol style={{ color: '#94a3b8', marginTop: 12, lineHeight: 1.8, paddingLeft: 18, fontSize:13 }}>
-            <li>Ingest CSV / JSON / REST via extensible connectors (live: 2200 records)</li>
+            <li>Ingest CSV / JSON / REST via extensible connectors</li>
             <li>Deterministic normalization (name, phone, email, address)</li>
             <li><b style={{color:'#22c55e'}}>ML matching</b>: LogisticRegression trained on FEBRL3 + Walmart-Amazon + Amazon-Google (7 feats)</li>
-            <li>Conflict detection + explainable evidence + audit-logged resolution (20 live conflicts)</li>
+            <li>Conflict detection + explainable evidence + audit-logged resolution</li>
           </ol>
         </div>
         <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 20, borderLeft:'3px solid #22c55e' }}>

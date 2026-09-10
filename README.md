@@ -64,7 +64,7 @@ required for the core product.
 
 ## 8. Testing
 
-`python -m pytest backend/tests/ -q` (360 tests: matching, decisions, conflicts, presence, sync, PG connector, unknown-outcome, security). Frontend: `cd frontend && npm run build`. Live E2E: upload → reconciliation → conflict → resolve → dry-run → push → verify.
+`python -m pytest backend/tests/ -q` (385 tests: matching, decisions, conflicts, presence, sync, PG connector, unknown-outcome, security, audit coverage). Frontend: `cd frontend && npm run build`. Live E2E: upload → reconciliation → conflict → resolve → dry-run → push → verify.
 
 ## 9. API
 
@@ -85,6 +85,6 @@ Single-tenant app-level auth only; no RBAC/SSO; no golden records; no lifecycle/
 
 ## 12. Docs
 
-Phase reports under `docs/`: product discovery/validation audits, real-data + temporal validation, 5A schema fix, 5B appearance/disappearance, 5C presence (design/implementation/wiring), 5D reviewer surfacing, 6A integration boundary, 6B PostgreSQL connector, 6C transient hardening, 6D outcome surfacing, release audit, and this phase's hardening report.
+Phase reports under `docs/`: product discovery/validation audits, real-data + temporal validation, 5A schema fix, 5B appearance/disappearance, 5C presence (design/implementation/wiring), 5D reviewer surfacing, 6A integration boundary, 6B PostgreSQL connector, 6C transient hardening, 6D outcome surfacing, 7 hardening, 8A–8D container/Supabase validation, release audits.
 
 License: MIT. See `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md`.
