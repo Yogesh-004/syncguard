@@ -19,6 +19,7 @@ venv/
 *.swo
 *.DS_Store
 node_modules/
+*.tsbuildinfo
 /.next/
 /.nuxt/
 output/

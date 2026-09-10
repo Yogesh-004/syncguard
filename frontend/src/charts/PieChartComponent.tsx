@@ -14,7 +14,7 @@ export default function PieChartComponent({ data, colors = ['#3b82f6', '#22c55e'
             <Cell key={index} fill={colors[index % colors.length]} />
           ))}
         </Pie>
-        <Tooltip contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8 }} />
+        <Tooltip contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 0 }} />
       </PieChart>
     </ResponsiveContainer>
   );
