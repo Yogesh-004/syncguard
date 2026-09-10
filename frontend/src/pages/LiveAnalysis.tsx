@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { GsapReveal } from '../components/Gsap'
 import api from '../services/api-client'
 
 export default function LiveAnalysis() {
@@ -23,7 +25,7 @@ export default function LiveAnalysis() {
       } catch {}
       await new Promise(r => setTimeout(r, 1000))
     }
-    setError('Timed out waiting for job — check Jobs page')
+    setError('Timed out waiting for job - check Jobs page')
   }
 
   async function submit() {
@@ -49,42 +51,48 @@ export default function LiveAnalysis() {
     } finally { setBusy(false) }
   }
 
-  async function clearLive(){
-    if(!liveSource) return
-    try{ await api.delete(`/sources/${liveSource}`) }catch{}
+  async function clearLive() {
+    if (!liveSource) return
+    try { await api.delete(`/sources/${liveSource}`) } catch {}
     localStorage.removeItem('activeLiveSourceId')
     localStorage.removeItem('activeLiveSourceName')
     setLiveSource(null); setResult(null); setJobId(null); setStatus(''); setError('')
   }
 
   return (
-    <div style={{ maxWidth: 760, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 28, fontWeight: 800 }}>Live Analysis</h1>
-      <p style={{ color: '#94a3b8', marginTop: 8 }}>Mode: <b style={{color:'#22c55e'}}>LIVE</b> • Trained model inference on your upload — no demo or benchmark data.</p>
+    <div className="mx-auto max-w-[760px]">
+      <GsapReveal>
+        <h1 className="text-[28px] font-extrabold tracking-tight">Live Analysis</h1>
+        <p className="mt-2 text-[14px] text-fog">Mode: <b className="text-ok">LIVE</b> \u2022 Trained model inference on your upload - no demo or benchmark data.</p>
+      </GsapReveal>
+
       {liveSource && (
-        <div style={{background:'#22c55e15', border:'1px solid #22c55e30', borderRadius:8, padding:10, marginTop:12, display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-          <span style={{color:'#22c55e', fontWeight:600, fontSize:13}}>Live dataset active: Source #{liveSource}</span>
-          <button onClick={clearLive} style={{background:'#ef4444', color:'white', border:'none', padding:'6px 12px', borderRadius:6, fontSize:12, fontWeight:700}}>Delete & restore</button>
+        <div className="mt-3 flex items-center justify-between border border-ok/30 bg-ok/10 p-2.5">
+          <span className="text-[13px] font-semibold text-ok">Live dataset active: Source #{liveSource}</span>
+          <button onClick={clearLive} className="sg-btn bg-danger px-3 py-1.5 text-[11px] font-bold text-white hover:bg-danger/80">Delete & restore</button>
         </div>
       )}
-      <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 20, marginTop: 16 }}>
-        <input type="file" accept=".csv,.json" onChange={e => setFile(e.target.files?.[0] || null)} style={{ color: '#e2e8f0' }} />
-        <div style={{ marginTop: 16, display: 'flex', gap: 12, flexWrap:'wrap' }}>
-          <button onClick={submit} disabled={busy} style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '10px 18px', borderRadius: 8, fontWeight: 700, cursor: 'pointer', opacity: busy?0.6:1 }}>{busy?'Processing...':'Upload & Analyze'}</button>
-          <a href="/records" style={{ padding: '10px 18px', border: '1px solid #334155', borderRadius: 8, fontSize:13 }}>Records</a>
-          <a href="/matching" style={{ padding: '10px 18px', border: '1px solid #334155', borderRadius: 8, fontSize:13 }}>Matching</a>
+
+      <div className="sg-card mt-4 p-5">
+        <input type="file" accept=".csv,.json" onChange={e => setFile(e.target.files?.[0] || null)} className="text-fog" />
+        <div className="mt-4 flex flex-wrap gap-3">
+          <button onClick={submit} disabled={busy} className="sg-btn bg-info px-4 py-2.5 text-[13px] font-bold text-white hover:bg-info/80 disabled:opacity-50">
+            {busy ? 'Processing...' : 'Upload & Analyze'}
+          </button>
+          <Link to="/records" className="sg-btn border border-line px-4 py-2.5 text-[13px] text-fog hover:bg-white/5 hover:text-white">Records</Link>
+          <Link to="/matching" className="sg-btn border border-line px-4 py-2.5 text-[13px] text-fog hover:bg-white/5 hover:text-white">Matching</Link>
         </div>
-        {error && <div style={{ color: '#f87171', marginTop: 12 }}>{error}</div>}
-        {jobId && <div style={{ color: '#94a3b8', fontSize: 13, marginTop: 12 }}>Job #{jobId} • Status: <b>{status}</b> (live backend state, not simulated)</div>}
+        {error && <div className="mt-3 text-danger">{error}</div>}
+        {jobId && <div className="mt-3 text-[13px] text-fog">Job #{jobId} \u2022 Status: <b>{status}</b> (live backend state, not simulated)</div>}
         {result && (
-          <div style={{ background: '#0f172a', padding: 14, borderRadius: 8, marginTop: 16, fontSize: 13 }}>
-            <div style={{fontWeight:700}}>Model: SyncGuard Matcher v{result.model_version} • Mode: LIVE • Job #{result.job_id}</div>
-            <div style={{display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8, marginTop:10}}>
-              <div style={{background:'#1e293b', borderRadius:8, padding:10, textAlign:'center'}}><div style={{color:'#94a3b8', fontSize:11}}>Records Processed</div><div style={{fontWeight:800, fontSize:20}}>{result.records_processed}</div></div>
-              <div style={{background:'#1e293b', borderRadius:8, padding:10, textAlign:'center'}}><div style={{color:'#94a3b8', fontSize:11}}>Matches</div><div style={{fontWeight:800, fontSize:20, color:'#22c55e'}}>{result.matches_found}</div></div>
-              <div style={{background:'#1e293b', borderRadius:8, padding:10, textAlign:'center'}}><div style={{color:'#94a3b8', fontSize:11}}>Conflicts</div><div style={{fontWeight:800, fontSize:20, color:'#f59e0b'}}>{result.conflicts}</div></div>
+          <div className="mt-4 bg-ink-900 p-3.5 text-[13px]">
+            <div className="font-bold">Model: SyncGuard Matcher v{result.model_version} \u2022 Mode: LIVE \u2022 Job #{result.job_id}</div>
+            <div className="mt-2.5 grid grid-cols-3 gap-2">
+              <div className="bg-ink-950 p-2.5 text-center"><div className="text-[11px] text-fog">Records Processed</div><div className="mt-1 text-[20px] font-extrabold">{result.records_processed}</div></div>
+              <div className="bg-ink-950 p-2.5 text-center"><div className="text-[11px] text-fog">Matches</div><div className="mt-1 text-[20px] font-extrabold text-ok">{result.matches_found}</div></div>
+              <div className="bg-ink-950 p-2.5 text-center"><div className="text-[11px] text-fog">Conflicts</div><div className="mt-1 text-[20px] font-extrabold text-warn">{result.conflicts}</div></div>
             </div>
-            <div style={{color:'#64748b', fontSize:11, marginTop:8}}>Inference timestamp: {result.job?.created_at || ''} • Input source: #{liveSource}</div>
+            <div className="mt-2 text-[11px] text-fog/50">Inference timestamp: {result.job?.created_at || ''} \u2022 Input source: #{liveSource}</div>
           </div>
         )}
       </div>
