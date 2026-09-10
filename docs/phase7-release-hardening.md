@@ -44,7 +44,7 @@ Security, secrets, repository hygiene, documentation accuracy, deployment reprod
 
 ### Documentation
 - BEFORE: duplicate 6C filenames; stale "(Phase 2)" UI label.
-- ACTION: interim 6C report marked historical with authoritative pointer (history preserved); stale label fixed. Remaining brief-side filename mismatch (`phase6d-sync-review-status.md`, never existed in repo) noted, not rewritten.
+- ACTION: interim 6C report marked historical with authoritative pointer (history preserved); stale label fixed. Remaining brief-side filename `phase6d-sync-review-status.md` never existed in repo; the actual report is `docs/phase6d-reviewer-outcome-verification.md`.
 - EVIDENCE: file inspection; Conflicts.tsx renders neutral label.
 - STATUS: PASS
 

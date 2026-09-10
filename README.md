@@ -87,4 +87,4 @@ Single-tenant app-level auth only; no RBAC/SSO; no golden records; no lifecycle/
 
 Phase reports under `docs/`: product discovery/validation audits, real-data + temporal validation, 5A schema fix, 5B appearance/disappearance, 5C presence (design/implementation/wiring), 5D reviewer surfacing, 6A integration boundary, 6B PostgreSQL connector, 6C transient hardening, 6D outcome surfacing, 7 hardening, 8A–8D container/Supabase validation, release audits.
 
-License: MIT. See `LICENSE`, `CONTRIBUTING.md`, `SECURITY.md`.
+License: MIT. See `LICENSE`, `CONTRIBUTING.md`.
