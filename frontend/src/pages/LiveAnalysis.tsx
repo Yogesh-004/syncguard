@@ -12,7 +12,7 @@ export default function LiveAnalysis() {
   const [liveSource, setLiveSource] = useState<string | null>(localStorage.getItem('activeLiveSourceId'))
   const [busy, setBusy] = useState(false)
 
-  async function poll(job: number, tries = 30) {
+  async function poll(job: number, tries = 150) {
     for (let i = 0; i < tries; i++) {
       try {
         const j = await api.get(`/reconciliation/${job}`)
@@ -23,7 +23,7 @@ export default function LiveAnalysis() {
           return
         }
       } catch {}
-      await new Promise(r => setTimeout(r, 1000))
+      await new Promise(r => setTimeout(r, 5000))
     }
     setError('Timed out waiting for job - check Jobs page')
   }

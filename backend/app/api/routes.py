@@ -5,7 +5,7 @@ import re
 import uuid
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, Header, Request, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, UploadFile, File, Header, Request, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -232,53 +232,35 @@ def upload_records_legacy(source_id: str, filename: str, db: Session = Depends(g
 
 # ---------- Reconciliation (spec) ----------
 
-@router.post("/reconciliation", status_code=status.HTTP_202_ACCEPTED)
-def create_reconciliation(
-    payload: Dict[str, Any],
-    request: Request,
-    idempotency_key: Optional[str] = Header(None, alias="Idempotency-Key"),
-    db: Session = Depends(get_db),
-):
-    source_ids = payload.get("source_ids") or payload.get("source_id") or []
-    if isinstance(source_ids, str):
-        source_ids = [source_ids]
-    body_key = payload.get("idempotency_key")
-    key = _idempotency_key(body_key, idempotency_key, str(payload))
+def _run_reconciliation_inline(job_id: int, source_ids: list, model_version: str):
+    """Execute the existing inline ML pipeline for one job in the background.
+
+    Same pipeline body as the former in-request execution, with its own DB
+    session (the request session is closed once the 202 responds). The
+    queued->processing claim guarantees a job runs at most once even if
+    scheduled twice. All failures persist failed status + error_message.
+    """
+    from backend.app.db.database import SessionLocal
     from backend.app.services import model_service as _model_service
+    db = SessionLocal()
     try:
-        _model_service.load_model()
-        model_version = _model_service.get_model_version()
-    except Exception as e:
-        logger.error("LIVE_ANALYSIS_FAILED", error=f"Model unavailable: {e}")
-        raise HTTPException(status_code=503, detail="Model unavailable")
-    existing = db.query(ReconciliationJobModel).filter(ReconciliationJobModel.idempotency_key == key).first()
-    if existing:
-        return {"id": existing.id, "job_id": existing.id, "mode": "live", "model_version": model_version, "status": existing.status, "idempotency_key": key}
-    model = ReconciliationJobModel(job_type="reconciliation", source_id=str(source_ids), status="queued", idempotency_key=key, max_retries=3)
-    logger.info("LIVE_ANALYSIS_STARTED", job_id="pending", model_version=model_version, sources=str(source_ids))
-    db.add(model)
-    try:
+        model = db.query(ReconciliationJobModel).filter(ReconciliationJobModel.id == job_id).first()
+        if not model:
+            logger.error("BACKGROUND_JOB_MISSING", job_id=job_id)
+            return
+        claimed = db.query(ReconciliationJobModel).filter(
+            ReconciliationJobModel.id == job_id,
+            ReconciliationJobModel.status == "queued",
+        ).update({"status": "processing",
+                  "started_at": __import__("datetime").datetime.utcnow()},
+                 synchronize_session=False) == 1
+        if not claimed:
+            db.rollback()
+            logger.info("BACKGROUND_JOB_ALREADY_RUNNING", job_id=job_id)
+            return
         db.commit()
         db.refresh(model)
-    except IntegrityError:
-        db.rollback()
-        existing = db.query(ReconciliationJobModel).filter(ReconciliationJobModel.idempotency_key == key).first()
-        return {"id": existing.id, "job_id": existing.id, "status": existing.status, "idempotency_key": key}
-    # Try Celery, else run inline ML pipeline and push to jobs
-    ran_inline = False
-    try:
-        from backend.app.workers.tasks import reconcile_task
-        # run inline if Redis not available (dev)
-        import os
-        if os.getenv("CELERY_BROKER_URL") or os.getenv("REDIS_URL"):
-            reconcile_task.delay(model.id, str(source_ids), [])
-        else:
-            raise Exception("no broker, inline")
-    except Exception as e:
-        logger.info("Running inline ML pipeline (benchmark-connected)", error=str(e))
         try:
-            model.status = "processing"
-            model.started_at = __import__("datetime").datetime.utcnow()
             # load records for sources (or all if empty)
             q = db.query(RecordModel)
             if source_ids:
@@ -444,6 +426,59 @@ def create_reconciliation(
             model.status = "failed"
             model.error_message = str(ex)
             db.commit()
+    finally:
+        db.close()
+
+@router.post("/reconciliation", status_code=status.HTTP_202_ACCEPTED)
+def create_reconciliation(
+    payload: Dict[str, Any],
+    request: Request,
+    idempotency_key: Optional[str] = Header(None, alias="Idempotency-Key"),
+    db: Session = Depends(get_db),
+    background_tasks: BackgroundTasks = None,
+):
+    source_ids = payload.get("source_ids") or payload.get("source_id") or []
+    if isinstance(source_ids, str):
+        source_ids = [source_ids]
+    body_key = payload.get("idempotency_key")
+    key = _idempotency_key(body_key, idempotency_key, str(payload))
+    from backend.app.services import model_service as _model_service
+    try:
+        _model_service.load_model()
+        model_version = _model_service.get_model_version()
+    except Exception as e:
+        logger.error("LIVE_ANALYSIS_FAILED", error=f"Model unavailable: {e}")
+        raise HTTPException(status_code=503, detail="Model unavailable")
+    existing = db.query(ReconciliationJobModel).filter(ReconciliationJobModel.idempotency_key == key).first()
+    if existing:
+        return {"id": existing.id, "job_id": existing.id, "mode": "live", "model_version": model_version, "status": existing.status, "idempotency_key": key}
+    model = ReconciliationJobModel(job_type="reconciliation", source_id=str(source_ids), status="queued", idempotency_key=key, max_retries=3)
+    logger.info("LIVE_ANALYSIS_STARTED", job_id="pending", model_version=model_version, sources=str(source_ids))
+    db.add(model)
+    try:
+        db.commit()
+        db.refresh(model)
+    except IntegrityError:
+        db.rollback()
+        existing = db.query(ReconciliationJobModel).filter(ReconciliationJobModel.idempotency_key == key).first()
+        return {"id": existing.id, "job_id": existing.id, "status": existing.status, "idempotency_key": key}
+    # Try Celery, else schedule the existing inline pipeline as a background
+    # task so POST returns 202 immediately (long workloads must not block it).
+    ran_inline = False
+    try:
+        from backend.app.workers.tasks import reconcile_task
+        # run inline if Redis not available (dev)
+        import os
+        if os.getenv("CELERY_BROKER_URL") or os.getenv("REDIS_URL"):
+            reconcile_task.delay(model.id, str(source_ids), [])
+        else:
+            raise Exception("no broker, inline")
+    except Exception as e:
+        logger.info("Running inline ML pipeline (benchmark-connected)", error=str(e))
+    if background_tasks is None:
+        _run_reconciliation_inline(model.id, list(source_ids), model_version)
+    else:
+        background_tasks.add_task(_run_reconciliation_inline, model.id, list(source_ids), model_version)
     logger.info("Reconciliation job created", job_id=model.id, inline=ran_inline)
     return {"id": model.id, "job_id": model.id, "mode": "live", "model_version": model_version, "status": model.status, "progress": model.progress, "idempotency_key": key, "total_records": model.total_records}
 
