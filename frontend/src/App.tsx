@@ -105,7 +105,10 @@ export default function App() {
                   More
                 </button>
                 {moreOpen && (
-                  <div className="absolute right-0 top-[calc(100%+4px)] w-44 border border-line bg-ink-950 p-1 shadow-2xl">
+                  <div
+                    className="absolute right-0 top-[calc(100%+4px)] w-44 border border-line bg-ink-950 p-1 shadow-2xl"
+                    onMouseDown={(e) => e.preventDefault()}
+                  >
                     {overflowLinks.map((l) => (
                       <NavLink
                         key={l.to}
