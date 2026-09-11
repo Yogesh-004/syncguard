@@ -62,7 +62,7 @@ All verified by automated tests against real PostgreSQL, not mocks alone:
 - Real PostgreSQL guarded sync passed: stale-write rejection, idempotent replay, verify-before-retry, audit persistence — all green against live databases.
 - Weak voter-ID labels used throughout — a stated limitation, never ground truth.
 - Email/phone contradiction paths are synthetic-only (fields absent from the public data).
-- 50K-scale not validated; pairwise cost guarded by `MAX_JOB_RECORDS=2000`.
+- 50K-scale not validated; pairwise cost guarded by `MAX_JOB_RECORDS=1000`.
 - Parallel-push SQLite test flake documented (passes solo; app-DB test harness only).
 - Never "accuracy": validated recall and zero incorrect automatic merges in the tested datasets.
 

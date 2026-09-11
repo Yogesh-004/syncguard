@@ -242,8 +242,9 @@ def _run_reconciliation_inline(job_id: int, source_ids: list, model_version: str
     """
     from backend.app.db.database import SessionLocal
     from backend.app.services import model_service as _model_service
-    db = SessionLocal()
+    db = None
     try:
+        db = SessionLocal()
         model = db.query(ReconciliationJobModel).filter(ReconciliationJobModel.id == job_id).first()
         if not model:
             logger.error("BACKGROUND_JOB_MISSING", job_id=job_id)
@@ -426,8 +427,37 @@ def _run_reconciliation_inline(job_id: int, source_ids: list, model_version: str
             model.status = "failed"
             model.error_message = str(ex)
             db.commit()
+    except Exception as setup_ex:
+        # Setup-phase failure (session, claim, or refresh — before the pipeline
+        # try above): without this handler the job would stay queued/processing
+        # forever with no error persisted. Recovered on a fresh session since
+        # the failed one may hold an aborted transaction. Roll back first so
+        # the failed session releases any row locks before recovery writes.
+        logger.error("BACKGROUND_SETUP_FAILED", job_id=job_id, error=str(setup_ex))
+        try:
+            db.rollback()
+        except Exception:
+            pass
+        try:
+            from backend.app.db.database import SessionLocal as _SessionLocal2
+            _db2 = _SessionLocal2()
+            try:
+                _job = _db2.query(ReconciliationJobModel).filter(
+                    ReconciliationJobModel.id == job_id).first()
+                if _job is not None and _job.status != "completed":
+                    _job.status = "failed"
+                    _job.error_message = str(setup_ex)
+                    _db2.commit()
+            finally:
+                _db2.close()
+        except Exception:
+            pass
     finally:
-        db.close()
+        try:
+            if db is not None:
+                db.close()
+        except Exception:
+            pass
 
 @router.post("/reconciliation", status_code=status.HTTP_202_ACCEPTED)
 def create_reconciliation(

@@ -156,3 +156,80 @@ def test_10_fresh_pg_migration_matches_metadata():
         admin.autocommit = True
         admin.cursor().execute("DROP DATABASE IF EXISTS syncguard_8btest")
         admin.close()
+
+@pytest.fixture
+def _clean_settings(monkeypatch):
+    monkeypatch.delenv("MAX_UPLOAD_ROWS", raising=False)
+    monkeypatch.delenv("MAX_JOB_RECORDS", raising=False)
+
+
+def test_12_scope_defaults(_clean_settings):
+    from backend.app.core.config import Settings
+    s = Settings()
+    assert s.MAX_UPLOAD_ROWS == 1000, s.MAX_UPLOAD_ROWS
+    assert s.MAX_JOB_RECORDS == 1000, s.MAX_JOB_RECORDS
+
+
+def test_13_scope_env_override(monkeypatch):
+    monkeypatch.setenv("MAX_UPLOAD_ROWS", "5000")
+    monkeypatch.setenv("MAX_JOB_RECORDS", "4000")
+    from backend.app.core.config import Settings
+    s = Settings()
+    assert (s.MAX_UPLOAD_ROWS, s.MAX_JOB_RECORDS) == (5000, 4000)
+
+
+def _csv_rows(n, tag):
+    lines = ["rec_id,given_name,surname,email,phone,postcode"]
+    for i in range(n):
+        lines.append(f"{tag}-{i},A{i},B{i},u{i}@x.com,9{i:07d},{10000 + i}")
+    return ("\n".join(lines) + "\n").encode()
+
+
+def test_14_boundary_1000_accepted_1001_rejected():
+    from fastapi.testclient import TestClient
+    from backend.app.main import app
+    from backend.app.core.config import settings
+    headers = {}
+    key = (settings.API_KEY or "").strip()
+    if key:
+        headers["X-API-Key"] = key
+    with TestClient(app) as c:
+        ok = c.post("/uploads", files={"file": ("b.csv", _csv_rows(1000, "ok"), "text/csv")},
+                    headers=headers)
+        assert ok.status_code == 201, ok.text[:200]
+        big = c.post("/uploads", files={"file": ("b.csv", _csv_rows(1001, "no"), "text/csv")},
+                     headers=headers)
+        assert big.status_code == 413, big.status_code
+        assert "1000" in big.text
+
+
+def test_15_job_guard_enforced(monkeypatch):
+    from fastapi.testclient import TestClient
+    from backend.app.main import app
+    from backend.app.core import config as cfgmod
+    from backend.app.db.database import SessionLocal
+    from backend.app.db.models import ReconciliationJobModel
+    monkeypatch.setattr(cfgmod.settings, "MAX_JOB_RECORDS", 2)
+    headers = {}
+    key = (cfgmod.settings.API_KEY or "").strip()
+    if key:
+        headers["X-API-Key"] = key
+    with TestClient(app) as c:
+        sid = c.post("/uploads", files={"file": ("g.csv", _csv_rows(3, "gd"), "text/csv")},
+                     headers=headers).json()["source_id"]
+        r = c.post("/reconciliation", json={"source_ids": [sid]},
+                   headers=headers).json()
+        db = SessionLocal()
+        try:
+            for _ in range(60):
+                job = db.query(ReconciliationJobModel).filter(
+                    ReconciliationJobModel.id == r["job_id"]).first()
+                db.refresh(job)
+                if job.status in ("completed", "failed"):
+                    break
+                import time
+                time.sleep(1)
+            assert job.status == "failed", job.status
+            assert "MAX_JOB_RECORDS" in (job.error_message or "")
+        finally:
+            db.close()

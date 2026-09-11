@@ -34,8 +34,8 @@ class Settings(BaseSettings):
     MATCH_THRESHOLD: float = 0.6
     POSSIBLE_MATCH_THRESHOLD: float = 0.5
     PERSIST_NOMATCH_SAMPLE: int = 100
-    MAX_JOB_RECORDS: int = 2000
-    MAX_UPLOAD_ROWS: int = 10000
+    MAX_JOB_RECORDS: int = 1000
+    MAX_UPLOAD_ROWS: int = 1000
     MAX_FIELD_CHARS: int = 10000
     PHONE_DEFAULT_REGION: str = "US"
     BLOCKING_PASSES: str = "postcode,name,phone,email"
