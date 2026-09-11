@@ -153,7 +153,7 @@ function Hero() {
           <Link
             data-hero-cta
             to="/benchmarks"
-            className="sg-btn border border-fog/40 bg-white px-7 py-3.5 text-[15px] text-ink-950 hover:bg-slate-200"
+            className="sg-btn border border-fog/40 bg-white px-7 py-3.5 text-[15px] text-ink-950! hover:bg-slate-200"
           >
             View benchmarks
           </Link>
